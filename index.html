@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/C4D0BAQGpz2XU_DFZrw/company-logo_200_200/company-logo_200_200/0/1631363400585/mwmicroware_logo?e=2147483647&v=beta&t=K_wYmzSBRukQarDeLvYoS8Fn0h_ZFqwpNc_u0P1GSpg">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/C4D0BAQGpz2XU_DFZrw/company-logo_200_200/company-logo_200_200/0/1631363400585/mwmicroware_logo?e=2147483647&v=beta&t=K_wYmzSBRukQarDeLvYoS8Fn0h_ZFqwpNc_u0P1GSpg">
   <title>Oficina MW Microware</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -39,12 +39,21 @@
     .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
     code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
     .logo { max-width:280px; height:auto; }
+
+    :root {
+  --bg:#f3f4f6;
+  --card:#fff;
+  --text:#111827;
+  --muted:#6b7280;
+  --primary:#5e5e5e;
+  --primary-dark:#1a1a1a;
+  --border:#e5e7eb;
+}
   </style>
 </head>
 <body>
   <div class="container">
     <div id="authView" class="card">
-      <center><h1>OFICINA MW MICROWARE</h1></center>
       <center>
         <img
           class="logo"
