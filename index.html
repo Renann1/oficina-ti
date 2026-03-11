@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oficina Hardware</title>
+  <title>Oficina MW Microware</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -37,18 +37,20 @@
     .err { color:#b91c1c; }
     .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
     code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
+    .logo { max-width:280px; height:auto; }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="card">
-      <h3>Código fácil de editar</h3>
-      <p class="muted">No topo do JavaScript, altere as listas <code>RAM_OPTIONS</code>, <code>STORAGE_OPTIONS</code> e <code>LOCALIDADE_OPTIONS</code>.</p>
-    </div>
-
     <div id="authView" class="card">
-      <h1>Oficina de Hardware</h1>
-      <p class="muted">Registro e login por técnico com Supabase.</p>
+      <center><h1>OFICINA MW MICROWARE</h1></center>
+      <center>
+        <img
+          class="logo"
+          src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png"
+          alt="MW Microware"
+        />
+      </center>
 
       <div class="row" style="margin-bottom:12px;">
         <button id="btnTabLogin">Login</button>
@@ -59,7 +61,7 @@
         <div class="grid-2">
           <div>
             <label>Email</label>
-            <input id="loginEmail" type="email" placeholder="tecnico@empresa.com" />
+            <input id="loginEmail" type="email" placeholder="tecnico@mwmicroware.com" />
           </div>
           <div>
             <label>Senha</label>
@@ -184,7 +186,14 @@
     const STORAGE_OPTIONS = ["SSD Keepdata", "SSD Ceamere", "SSD Kingston", "SSD Outros", "HDD Notebook", "HDD Computador"];
     const LOCALIDADE_OPTIONS = ["PAMB", "Mandaqui", "Castelo", "Coleta Externa", "Centro Cirúrgico", "PA"];
 
-    const APP = { sessionUser: null, profile: null, editingId: null, lastCalls: [] };
+    const APP = {
+      sessionUser: null,
+      profile: null,
+      editingId: null,
+      lastCalls: [],
+      supabase: null
+    };
+
     const $ = (id) => document.getElementById(id);
 
     function fillSelect(selectId, options, placeholder = "Selecione") {
@@ -194,6 +203,7 @@
       first.value = "";
       first.textContent = placeholder;
       el.appendChild(first);
+
       options.forEach(item => {
         const option = document.createElement("option");
         option.value = item;
@@ -243,7 +253,19 @@
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || window.SUPABASE_URL.includes("COLE_AQUI")) {
         throw new Error("Preencha o arquivo supabase-config.js com a URL e a ANON KEY do Supabase.");
       }
-      return window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+
+      if (!window.supabase || !window.supabase.createClient) {
+        throw new Error("A biblioteca do Supabase não carregou corretamente.");
+      }
+
+      if (!APP.supabase) {
+        APP.supabase = window.supabase.createClient(
+          window.SUPABASE_URL,
+          window.SUPABASE_ANON_KEY
+        );
+      }
+
+      return APP.supabase;
     }
 
     async function register() {
@@ -253,8 +275,13 @@
         const senha = $("regSenha").value;
         const senha2 = $("regSenha2").value;
 
-        if (!nome || !email || !senha || !senha2) return setMsg(authMsg, "Preencha todos os campos.", "err");
-        if (senha !== senha2) return setMsg(authMsg, "As senhas não coincidem.", "err");
+        if (!nome || !email || !senha || !senha2) {
+          return setMsg(authMsg, "Preencha todos os campos.", "err");
+        }
+
+        if (senha !== senha2) {
+          return setMsg(authMsg, "As senhas não coincidem.", "err");
+        }
 
         const supabase = getSupabase();
         const { data, error } = await supabase.auth.signUp({ email, password: senha });
@@ -266,6 +293,7 @@
             nome: nome,
             email: email
           });
+
           if (profileError) throw profileError;
         }
 
@@ -273,6 +301,7 @@
         $("loginEmail").value = email;
         showLogin();
       } catch (e) {
+        console.error("Erro no registro:", e);
         setMsg(authMsg, e.message || "Erro ao registrar.", "err");
       }
     }
@@ -290,13 +319,19 @@
         await loadProfile();
         enterApp();
       } catch (e) {
+        console.error("Erro no login:", e);
         setMsg(authMsg, e.message || "Erro ao entrar.", "err");
       }
     }
 
     async function loadProfile() {
       const supabase = getSupabase();
-      const { data, error } = await supabase.from("tecnicos").select("*").eq("id", APP.sessionUser.id).single();
+      const { data, error } = await supabase
+        .from("tecnicos")
+        .select("*")
+        .eq("id", APP.sessionUser.id)
+        .single();
+
       if (error) throw error;
       APP.profile = data;
     }
@@ -311,12 +346,15 @@
       try {
         const supabase = getSupabase();
         const { data } = await supabase.auth.getSession();
+
         if (data.session?.user) {
           APP.sessionUser = data.session.user;
           await loadProfile();
           enterApp();
         }
-      } catch (_) {}
+      } catch (e) {
+        console.error("Erro ao restaurar sessão:", e);
+      }
     }
 
     function collectForm() {
@@ -342,6 +380,7 @@
       if (!p.numero_chamado || !p.patrimonio || !p.ip || !p.localidade || !p.memoria_ram || !p.armazenamento_tipo || !p.problema || !p.resolucao) {
         throw new Error("Preencha todos os campos obrigatórios.");
       }
+
       if (p.armazenamento_tipo === "SSD Outros" && !p.armazenamento_outros) {
         throw new Error("Informe a marca/modelo do SSD.");
       }
@@ -373,10 +412,19 @@
         validatePayload(payload);
 
         if (APP.editingId) {
-          const { data: prev, error: prevError } = await supabase.from("chamados").select("*").eq("id", APP.editingId).single();
+          const { data: prev, error: prevError } = await supabase
+            .from("chamados")
+            .select("*")
+            .eq("id", APP.editingId)
+            .single();
+
           if (prevError) throw prevError;
 
-          const { error } = await supabase.from("chamados").update(payload).eq("id", APP.editingId);
+          const { error } = await supabase
+            .from("chamados")
+            .update(payload)
+            .eq("id", APP.editingId);
+
           if (error) throw error;
 
           const labels = {
@@ -404,11 +452,16 @@
             acao: "UPDATE",
             resumo: changed.length ? `Alterado: ${changed.join(", ")}` : "Alteração sem mudança detectada"
           });
-          if (auditError) throw auditError;
 
+          if (auditError) throw auditError;
           setMsg(formMsg, "Chamado atualizado com sucesso.", "ok");
         } else {
-          const { data, error } = await supabase.from("chamados").insert(payload).select().single();
+          const { data, error } = await supabase
+            .from("chamados")
+            .insert(payload)
+            .select()
+            .single();
+
           if (error) throw error;
 
           const { error: auditError } = await supabase.from("historico_alteracoes").insert({
@@ -419,14 +472,15 @@
             acao: "CREATE",
             resumo: `Chamado ${payload.numero_chamado} criado`
           });
-          if (auditError) throw auditError;
 
+          if (auditError) throw auditError;
           setMsg(formMsg, "Chamado salvo com sucesso.", "ok");
         }
 
         resetForm();
         if ($("buscaPatrimonio").value.trim()) buscar();
       } catch (e) {
+        console.error("Erro ao salvar chamado:", e);
         setMsg(formMsg, e.message || "Erro ao salvar.", "err");
       }
     }
@@ -437,15 +491,26 @@
         if (!patrimonio) return;
 
         const supabase = getSupabase();
-        const { data: chamados, error } = await supabase.from("chamados").select("*").ilike("patrimonio", `%${patrimonio}%`).order("created_at", { ascending: false });
+        const { data: chamados, error } = await supabase
+          .from("chamados")
+          .select("*")
+          .ilike("patrimonio", `%${patrimonio}%`)
+          .order("created_at", { ascending: false });
+
         if (error) throw error;
 
-        const { data: historico, error: histError } = await supabase.from("historico_alteracoes").select("*").ilike("patrimonio", `%${patrimonio}%`).order("created_at", { ascending: false });
+        const { data: historico, error: histError } = await supabase
+          .from("historico_alteracoes")
+          .select("*")
+          .ilike("patrimonio", `%${patrimonio}%`)
+          .order("created_at", { ascending: false });
+
         if (histError) throw histError;
 
         renderChamados(chamados || []);
         renderHistorico(historico || []);
       } catch (e) {
+        console.error("Erro na busca:", e);
         $("resultadoChamados").innerHTML = `<p class="err small">${e.message || "Erro na busca."}</p>`;
         $("resultadoHistorico").innerHTML = "";
       }
@@ -453,12 +518,14 @@
 
     function renderChamados(items) {
       APP.lastCalls = items;
+
       if (!items.length) {
         $("resultadoChamados").innerHTML = "<p class='muted'>Nenhum chamado encontrado.</p>";
         return;
       }
 
       let html = "<h4>Chamados</h4><table><tr><th>Chamado</th><th>Patrimônio</th><th>IP</th><th>Localidade</th><th>Técnico</th><th>RAM</th><th>Armazenamento</th><th>Ações</th></tr>";
+
       items.forEach(item => {
         const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
           ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
@@ -475,6 +542,7 @@
           <td><button onclick="editarChamado('${item.id}')" style="padding:8px 10px;">Editar</button></td>
         </tr>`;
       });
+
       html += "</table>";
       $("resultadoChamados").innerHTML = html;
     }
@@ -486,6 +554,7 @@
       }
 
       let html = "<h4>Histórico de alterações</h4><table><tr><th>Data</th><th>Ação</th><th>Técnico</th><th>Resumo</th></tr>";
+
       items.forEach(item => {
         html += `<tr>
           <td>${new Date(item.created_at).toLocaleString("pt-BR")}</td>
@@ -494,6 +563,7 @@
           <td>${item.resumo || "-"}</td>
         </tr>`;
       });
+
       html += "</table>";
       $("resultadoHistorico").innerHTML = html;
     }
@@ -526,7 +596,7 @@
       $("resolucao").value = item.resolucao || "";
       $("btnCancelarEdicao").classList.remove("hidden");
       window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    };
 
     $("btnCancelarEdicao").onclick = resetForm;
 
@@ -545,6 +615,7 @@
           .gte("created_at", startDate.toISOString())
           .lt("created_at", endDate.toISOString())
           .order("created_at", { ascending: true });
+
         if (error) throw error;
 
         const rows = [[
@@ -578,6 +649,7 @@
         a.download = `relatorio_chamados_${month}.csv`;
         a.click();
       } catch (e) {
+        console.error("Erro ao exportar CSV:", e);
         alert(e.message || "Erro ao exportar.");
       }
     }
@@ -586,7 +658,9 @@
       try {
         const supabase = getSupabase();
         await supabase.auth.signOut();
-      } catch (_) {}
+      } catch (e) {
+        console.error("Erro ao sair:", e);
+      }
       location.reload();
     }
 
