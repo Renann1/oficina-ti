@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Oficina Hardware</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root {
+      --bg:#f3f4f6; --card:#fff; --text:#111827; --muted:#6b7280;
+      --primary:#2563eb; --primary-dark:#1d4ed8; --border:#e5e7eb;
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text); }
+    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
+    .card { background:var(--card); border-radius:16px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:16px; }
+    h1,h2,h3,p { margin:0 0 10px; }
+    .muted { color:var(--muted); font-size:14px; }
+    .grid-2 { display:grid; grid-template-columns:1fr; gap:12px; }
+    @media (min-width: 720px) { .grid-2 { grid-template-columns:1fr 1fr; } }
+    label { display:block; margin-bottom:6px; font-weight:700; font-size:14px; }
+    input, select, textarea, button {
+      width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:15px;
+    }
+    textarea { min-height:100px; resize:vertical; }
+    button { background:var(--primary); color:#fff; border:none; font-weight:700; cursor:pointer; }
+    button:hover { background:var(--primary-dark); }
+    button.ghost { background:#e5e7eb; color:#111827; }
+    .row { display:flex; gap:10px; flex-wrap:wrap; }
+    .row > * { flex:1; min-width:160px; }
+    .hidden { display:none !important; }
+    .tag { display:inline-block; padding:6px 10px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:700; }
+    table { width:100%; border-collapse:collapse; font-size:14px; }
+    th, td { border-bottom:1px solid var(--border); padding:10px 8px; text-align:left; vertical-align:top; }
+    .small { font-size:12px; }
+    .ok { color:#065f46; }
+    .err { color:#b91c1c; }
+    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
+    code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h3>Código fácil de editar</h3>
+      <p class="muted">No topo do JavaScript, altere as listas <code>RAM_OPTIONS</code>, <code>STORAGE_OPTIONS</code> e <code>LOCALIDADE_OPTIONS</code>.</p>
+    </div>
+
+    <div id="authView" class="card">
+      <h1>Oficina de Hardware</h1>
+      <p class="muted">Registro e login por técnico com Supabase.</p>
+
+      <div class="row" style="margin-bottom:12px;">
+        <button id="btnTabLogin">Login</button>
+        <button id="btnTabRegister" class="ghost">Registrar</button>
+      </div>
+
+      <div id="loginBox">
+        <div class="grid-2">
+          <div>
+            <label>Email</label>
+            <input id="loginEmail" type="email" placeholder="tecnico@empresa.com" />
+          </div>
+          <div>
+            <label>Senha</label>
+            <input id="loginSenha" type="password" placeholder="******" />
+          </div>
+        </div>
+        <button id="btnLogin" style="margin-top:12px;">Entrar</button>
+      </div>
+
+      <div id="registerBox" class="hidden">
+        <div class="grid-2">
+          <div>
+            <label>Nome do técnico</label>
+            <input id="regNome" placeholder="Renann" />
+          </div>
+          <div>
+            <label>Email</label>
+            <input id="regEmail" type="email" placeholder="tecnico@empresa.com" />
+          </div>
+          <div>
+            <label>Senha</label>
+            <input id="regSenha" type="password" placeholder="******" />
+          </div>
+          <div>
+            <label>Confirmar senha</label>
+            <input id="regSenha2" type="password" placeholder="******" />
+          </div>
+        </div>
+        <button id="btnRegister" style="margin-top:12px;">Criar conta</button>
+      </div>
+
+      <p id="authMsg" class="small muted" style="margin-top:10px;"></p>
+    </div>
+
+    <div id="appView" class="hidden">
+      <div class="topbar">
+        <div>
+          <h2>Painel da Oficina</h2>
+          <p class="muted">Cadastro, consulta por patrimônio, histórico e exportação mensal.</p>
+        </div>
+        <div>
+          <span id="userInfo" class="tag"></span>
+          <button id="btnLogout" class="ghost" style="margin-top:8px;">Sair</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 id="formTitle">Novo chamado</h3>
+        <div class="grid-2">
+          <div>
+            <label>Número do chamado</label>
+            <input id="numeroChamado" placeholder="CH-1025" />
+          </div>
+          <div>
+            <label>Patrimônio</label>
+            <input id="patrimonio" placeholder="PAT-8841" />
+          </div>
+          <div>
+            <label>IP</label>
+            <input id="ip" placeholder="192.168.0.25" />
+          </div>
+          <div>
+            <label>Localidade</label>
+            <select id="localidade"></select>
+          </div>
+          <div>
+            <label>Memória RAM</label>
+            <select id="memoriaRam"></select>
+          </div>
+          <div id="ramOutroWrap" class="hidden">
+            <label>Outro valor de RAM</label>
+            <input id="memoriaRamOutro" placeholder="Ex.: 12 GB" />
+          </div>
+          <div>
+            <label>Armazenamento</label>
+            <select id="armazenamentoTipo"></select>
+          </div>
+          <div id="outroStorageWrap" class="hidden">
+            <label>Marca/modelo do SSD</label>
+            <input id="armazenamentoOutros" placeholder="Ex.: WD Green 240 GB" />
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Problema</label>
+            <textarea id="problema" placeholder="Descreva o problema"></textarea>
+          </div>
+          <div style="grid-column:1/-1;">
+            <label>Resolução</label>
+            <textarea id="resolucao" placeholder="Descreva a resolução"></textarea>
+          </div>
+        </div>
+        <div class="row" style="margin-top:12px;">
+          <button id="btnSalvar">Salvar chamado</button>
+          <button id="btnCancelarEdicao" class="ghost hidden">Cancelar edição</button>
+        </div>
+        <p id="formMsg" class="small muted" style="margin-top:10px;"></p>
+      </div>
+
+      <div class="card">
+        <h3>Consulta por patrimônio</h3>
+        <div class="row">
+          <input id="buscaPatrimonio" placeholder="Digite o patrimônio" />
+          <button id="btnBuscar">Buscar</button>
+        </div>
+        <div id="resultadoChamados" style="overflow:auto; margin-top:12px;"></div>
+        <div id="resultadoHistorico" style="overflow:auto; margin-top:12px;"></div>
+      </div>
+
+      <div class="card">
+        <h3>Exportar relatório mensal</h3>
+        <div class="row">
+          <input id="mesRef" type="month" />
+          <button id="btnExportar">Exportar CSV para Excel</button>
+        </div>
+        <p class="muted small">A exportação inclui técnico, IP e localidade.</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="./supabase-config.js"></script>
+  <script>
+    const RAM_OPTIONS = ["4 GB", "8 GB", "16 GB", "32 GB", "64 GB", "Outro"];
+    const STORAGE_OPTIONS = ["SSD Keepdata", "SSD Ceamere", "SSD Kingston", "SSD Outros", "HDD Notebook", "HDD Computador"];
+    const LOCALIDADE_OPTIONS = ["PAMB", "Mandaqui", "Castelo", "Coleta Externa", "Centro Cirúrgico", "PA"];
+
+    const APP = { sessionUser: null, profile: null, editingId: null, lastCalls: [] };
+    const $ = (id) => document.getElementById(id);
+
+    function fillSelect(selectId, options, placeholder = "Selecione") {
+      const el = $(selectId);
+      el.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder;
+      el.appendChild(first);
+      options.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item;
+        option.textContent = item;
+        el.appendChild(option);
+      });
+    }
+
+    fillSelect("memoriaRam", RAM_OPTIONS);
+    fillSelect("armazenamentoTipo", STORAGE_OPTIONS);
+    fillSelect("localidade", LOCALIDADE_OPTIONS);
+
+    const authMsg = $("authMsg");
+    const formMsg = $("formMsg");
+
+    function setMsg(el, msg, type = "muted") {
+      el.className = "small " + type;
+      el.textContent = msg;
+    }
+
+    function showLogin() {
+      $("loginBox").classList.remove("hidden");
+      $("registerBox").classList.add("hidden");
+      $("btnTabLogin").classList.remove("ghost");
+      $("btnTabRegister").classList.add("ghost");
+    }
+
+    function showRegister() {
+      $("loginBox").classList.add("hidden");
+      $("registerBox").classList.remove("hidden");
+      $("btnTabLogin").classList.add("ghost");
+      $("btnTabRegister").classList.remove("ghost");
+    }
+
+    $("btnTabLogin").onclick = showLogin;
+    $("btnTabRegister").onclick = showRegister;
+
+    $("memoriaRam").addEventListener("change", () => {
+      $("ramOutroWrap").classList.toggle("hidden", $("memoriaRam").value !== "Outro");
+    });
+
+    $("armazenamentoTipo").addEventListener("change", () => {
+      $("outroStorageWrap").classList.toggle("hidden", $("armazenamentoTipo").value !== "SSD Outros");
+    });
+
+    function getSupabase() {
+      if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || window.SUPABASE_URL.includes("COLE_AQUI")) {
+        throw new Error("Preencha o arquivo supabase-config.js com a URL e a ANON KEY do Supabase.");
+      }
+      return window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+    }
+
+    async function register() {
+      try {
+        const nome = $("regNome").value.trim();
+        const email = $("regEmail").value.trim();
+        const senha = $("regSenha").value;
+        const senha2 = $("regSenha2").value;
+
+        if (!nome || !email || !senha || !senha2) return setMsg(authMsg, "Preencha todos os campos.", "err");
+        if (senha !== senha2) return setMsg(authMsg, "As senhas não coincidem.", "err");
+
+        const supabase = getSupabase();
+        const { data, error } = await supabase.auth.signUp({ email, password: senha });
+        if (error) throw error;
+
+        if (data.user) {
+          const { error: profileError } = await supabase.from("tecnicos").upsert({
+            id: data.user.id,
+            nome: nome,
+            email: email
+          });
+          if (profileError) throw profileError;
+        }
+
+        setMsg(authMsg, "Conta criada. Faça login para entrar.", "ok");
+        $("loginEmail").value = email;
+        showLogin();
+      } catch (e) {
+        setMsg(authMsg, e.message || "Erro ao registrar.", "err");
+      }
+    }
+
+    async function login() {
+      try {
+        const email = $("loginEmail").value.trim();
+        const senha = $("loginSenha").value;
+        const supabase = getSupabase();
+
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password: senha });
+        if (error) throw error;
+
+        APP.sessionUser = data.user;
+        await loadProfile();
+        enterApp();
+      } catch (e) {
+        setMsg(authMsg, e.message || "Erro ao entrar.", "err");
+      }
+    }
+
+    async function loadProfile() {
+      const supabase = getSupabase();
+      const { data, error } = await supabase.from("tecnicos").select("*").eq("id", APP.sessionUser.id).single();
+      if (error) throw error;
+      APP.profile = data;
+    }
+
+    function enterApp() {
+      $("authView").classList.add("hidden");
+      $("appView").classList.remove("hidden");
+      $("userInfo").textContent = `${APP.profile.nome} • ${APP.profile.email}`;
+    }
+
+    async function restoreSession() {
+      try {
+        const supabase = getSupabase();
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user) {
+          APP.sessionUser = data.session.user;
+          await loadProfile();
+          enterApp();
+        }
+      } catch (_) {}
+    }
+
+    function collectForm() {
+      const memoriaBase = $("memoriaRam").value;
+      const memoriaFinal = memoriaBase === "Outro" ? $("memoriaRamOutro").value.trim() : memoriaBase;
+
+      return {
+        numero_chamado: $("numeroChamado").value.trim(),
+        patrimonio: $("patrimonio").value.trim().toUpperCase(),
+        ip: $("ip").value.trim(),
+        localidade: $("localidade").value,
+        memoria_ram: memoriaFinal,
+        armazenamento_tipo: $("armazenamentoTipo").value,
+        armazenamento_outros: $("armazenamentoTipo").value === "SSD Outros" ? $("armazenamentoOutros").value.trim() : "",
+        problema: $("problema").value.trim(),
+        resolucao: $("resolucao").value.trim(),
+        tecnico_id: APP.profile.id,
+        tecnico_nome: APP.profile.nome
+      };
+    }
+
+    function validatePayload(p) {
+      if (!p.numero_chamado || !p.patrimonio || !p.ip || !p.localidade || !p.memoria_ram || !p.armazenamento_tipo || !p.problema || !p.resolucao) {
+        throw new Error("Preencha todos os campos obrigatórios.");
+      }
+      if (p.armazenamento_tipo === "SSD Outros" && !p.armazenamento_outros) {
+        throw new Error("Informe a marca/modelo do SSD.");
+      }
+    }
+
+    function resetForm() {
+      APP.editingId = null;
+      $("formTitle").textContent = "Novo chamado";
+      $("numeroChamado").value = "";
+      $("patrimonio").value = "";
+      $("ip").value = "";
+      $("localidade").value = "";
+      $("memoriaRam").value = "";
+      $("memoriaRamOutro").value = "";
+      $("armazenamentoTipo").value = "";
+      $("armazenamentoOutros").value = "";
+      $("problema").value = "";
+      $("resolucao").value = "";
+      $("ramOutroWrap").classList.add("hidden");
+      $("outroStorageWrap").classList.add("hidden");
+      $("btnCancelarEdicao").classList.add("hidden");
+      setMsg(formMsg, "");
+    }
+
+    async function saveCall() {
+      try {
+        const supabase = getSupabase();
+        const payload = collectForm();
+        validatePayload(payload);
+
+        if (APP.editingId) {
+          const { data: prev, error: prevError } = await supabase.from("chamados").select("*").eq("id", APP.editingId).single();
+          if (prevError) throw prevError;
+
+          const { error } = await supabase.from("chamados").update(payload).eq("id", APP.editingId);
+          if (error) throw error;
+
+          const labels = {
+            numero_chamado: "Número do chamado",
+            patrimonio: "Patrimônio",
+            ip: "IP",
+            localidade: "Localidade",
+            memoria_ram: "Memória RAM",
+            armazenamento_tipo: "Armazenamento",
+            armazenamento_outros: "Detalhe armazenamento",
+            problema: "Problema",
+            resolucao: "Resolução"
+          };
+
+          const changed = [];
+          Object.keys(labels).forEach(k => {
+            if ((prev[k] || "") !== (payload[k] || "")) changed.push(labels[k]);
+          });
+
+          const { error: auditError } = await supabase.from("historico_alteracoes").insert({
+            chamado_id: APP.editingId,
+            patrimonio: payload.patrimonio,
+            tecnico_id: APP.profile.id,
+            tecnico_nome: APP.profile.nome,
+            acao: "UPDATE",
+            resumo: changed.length ? `Alterado: ${changed.join(", ")}` : "Alteração sem mudança detectada"
+          });
+          if (auditError) throw auditError;
+
+          setMsg(formMsg, "Chamado atualizado com sucesso.", "ok");
+        } else {
+          const { data, error } = await supabase.from("chamados").insert(payload).select().single();
+          if (error) throw error;
+
+          const { error: auditError } = await supabase.from("historico_alteracoes").insert({
+            chamado_id: data.id,
+            patrimonio: payload.patrimonio,
+            tecnico_id: APP.profile.id,
+            tecnico_nome: APP.profile.nome,
+            acao: "CREATE",
+            resumo: `Chamado ${payload.numero_chamado} criado`
+          });
+          if (auditError) throw auditError;
+
+          setMsg(formMsg, "Chamado salvo com sucesso.", "ok");
+        }
+
+        resetForm();
+        if ($("buscaPatrimonio").value.trim()) buscar();
+      } catch (e) {
+        setMsg(formMsg, e.message || "Erro ao salvar.", "err");
+      }
+    }
+
+    async function buscar() {
+      try {
+        const patrimonio = $("buscaPatrimonio").value.trim().toUpperCase();
+        if (!patrimonio) return;
+
+        const supabase = getSupabase();
+        const { data: chamados, error } = await supabase.from("chamados").select("*").ilike("patrimonio", `%${patrimonio}%`).order("created_at", { ascending: false });
+        if (error) throw error;
+
+        const { data: historico, error: histError } = await supabase.from("historico_alteracoes").select("*").ilike("patrimonio", `%${patrimonio}%`).order("created_at", { ascending: false });
+        if (histError) throw histError;
+
+        renderChamados(chamados || []);
+        renderHistorico(historico || []);
+      } catch (e) {
+        $("resultadoChamados").innerHTML = `<p class="err small">${e.message || "Erro na busca."}</p>`;
+        $("resultadoHistorico").innerHTML = "";
+      }
+    }
+
+    function renderChamados(items) {
+      APP.lastCalls = items;
+      if (!items.length) {
+        $("resultadoChamados").innerHTML = "<p class='muted'>Nenhum chamado encontrado.</p>";
+        return;
+      }
+
+      let html = "<h4>Chamados</h4><table><tr><th>Chamado</th><th>Patrimônio</th><th>IP</th><th>Localidade</th><th>Técnico</th><th>RAM</th><th>Armazenamento</th><th>Ações</th></tr>";
+      items.forEach(item => {
+        const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
+          ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
+          : item.armazenamento_tipo;
+
+        html += `<tr>
+          <td>${item.numero_chamado}</td>
+          <td>${item.patrimonio}</td>
+          <td>${item.ip || "-"}</td>
+          <td>${item.localidade || "-"}</td>
+          <td>${item.tecnico_nome || "-"}</td>
+          <td>${item.memoria_ram}</td>
+          <td>${storage}</td>
+          <td><button onclick="editarChamado('${item.id}')" style="padding:8px 10px;">Editar</button></td>
+        </tr>`;
+      });
+      html += "</table>";
+      $("resultadoChamados").innerHTML = html;
+    }
+
+    function renderHistorico(items) {
+      if (!items.length) {
+        $("resultadoHistorico").innerHTML = "<p class='muted'>Nenhum histórico encontrado.</p>";
+        return;
+      }
+
+      let html = "<h4>Histórico de alterações</h4><table><tr><th>Data</th><th>Ação</th><th>Técnico</th><th>Resumo</th></tr>";
+      items.forEach(item => {
+        html += `<tr>
+          <td>${new Date(item.created_at).toLocaleString("pt-BR")}</td>
+          <td>${item.acao}</td>
+          <td>${item.tecnico_nome || "-"}</td>
+          <td>${item.resumo || "-"}</td>
+        </tr>`;
+      });
+      html += "</table>";
+      $("resultadoHistorico").innerHTML = html;
+    }
+
+    window.editarChamado = function(id) {
+      const item = APP.lastCalls.find(x => x.id === id);
+      if (!item) return;
+
+      APP.editingId = id;
+      $("formTitle").textContent = "Editar chamado";
+      $("numeroChamado").value = item.numero_chamado || "";
+      $("patrimonio").value = item.patrimonio || "";
+      $("ip").value = item.ip || "";
+      $("localidade").value = item.localidade || "";
+
+      if (RAM_OPTIONS.includes(item.memoria_ram)) {
+        $("memoriaRam").value = item.memoria_ram;
+        $("memoriaRamOutro").value = "";
+        $("ramOutroWrap").classList.toggle("hidden", item.memoria_ram !== "Outro");
+      } else {
+        $("memoriaRam").value = "Outro";
+        $("memoriaRamOutro").value = item.memoria_ram || "";
+        $("ramOutroWrap").classList.remove("hidden");
+      }
+
+      $("armazenamentoTipo").value = item.armazenamento_tipo || "";
+      $("armazenamentoOutros").value = item.armazenamento_outros || "";
+      $("outroStorageWrap").classList.toggle("hidden", item.armazenamento_tipo !== "SSD Outros");
+      $("problema").value = item.problema || "";
+      $("resolucao").value = item.resolucao || "";
+      $("btnCancelarEdicao").classList.remove("hidden");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    $("btnCancelarEdicao").onclick = resetForm;
+
+    async function exportarCSV() {
+      try {
+        const month = $("mesRef").value;
+        if (!month) throw new Error("Selecione o mês.");
+
+        const startDate = new Date(month + "-01T00:00:00");
+        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+
+        const supabase = getSupabase();
+        const { data, error } = await supabase
+          .from("chamados")
+          .select("*")
+          .gte("created_at", startDate.toISOString())
+          .lt("created_at", endDate.toISOString())
+          .order("created_at", { ascending: true });
+        if (error) throw error;
+
+        const rows = [[
+          "Data", "Número do chamado", "Patrimônio", "IP", "Localidade", "Técnico",
+          "Memória RAM", "Armazenamento", "Problema", "Resolução"
+        ]];
+
+        (data || []).forEach(item => {
+          const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
+            ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
+            : item.armazenamento_tipo;
+
+          rows.push([
+            new Date(item.created_at).toLocaleString("pt-BR"),
+            item.numero_chamado,
+            item.patrimonio,
+            item.ip || "",
+            item.localidade || "",
+            item.tecnico_nome || "",
+            item.memoria_ram,
+            storage,
+            (item.problema || "").replace(/\n/g, " "),
+            (item.resolucao || "").replace(/\n/g, " ")
+          ]);
+        });
+
+        const csv = rows.map(r => r.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
+        const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `relatorio_chamados_${month}.csv`;
+        a.click();
+      } catch (e) {
+        alert(e.message || "Erro ao exportar.");
+      }
+    }
+
+    async function logout() {
+      try {
+        const supabase = getSupabase();
+        await supabase.auth.signOut();
+      } catch (_) {}
+      location.reload();
+    }
+
+    $("btnRegister").onclick = register;
+    $("btnLogin").onclick = login;
+    $("btnSalvar").onclick = saveCall;
+    $("btnBuscar").onclick = buscar;
+    $("btnExportar").onclick = exportarCSV;
+    $("btnLogout").onclick = logout;
+
+    restoreSession();
+  </script>
+</body>
+</html>
