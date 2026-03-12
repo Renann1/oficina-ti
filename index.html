@@ -57,7 +57,7 @@
     }
 
     .container {
-      max-width:1200px;
+      max-width:1250px;
       margin:0 auto;
       padding:16px;
     }
@@ -129,10 +129,6 @@
       background:var(--soft);
       color:var(--text);
       border:1px solid var(--border);
-    }
-
-    button.ghost:hover {
-      filter:brightness(.98);
     }
 
     .row {
@@ -357,7 +353,7 @@
     }
 
     .modal {
-      width:min(900px, 100%);
+      width:min(950px, 100%);
       max-height:90vh;
       overflow:auto;
       background:var(--card);
@@ -392,6 +388,30 @@
       text-align:center;
       background:var(--soft);
     }
+
+    .admin-item {
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      background:var(--soft);
+      margin-top:8px;
+    }
+
+    .admin-item-actions {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .admin-item-actions button {
+      width:auto;
+      padding:8px 10px;
+      font-size:13px;
+    }
   </style>
 </head>
 <body>
@@ -412,12 +432,7 @@
 
   <div class="container">
     <div id="authView" class="card">
-        <img
-          class="logo"
-          src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png"
-          alt="MW Microware"
-        />
-      </center>
+      <img class="logo" src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png" alt="MW Microware" />
 
       <div class="row" style="margin-bottom:12px;">
         <button id="btnTabLogin">Login</button>
@@ -492,8 +507,75 @@
             <div class="table-wrap" id="dashboardPatrimonio"></div>
           </div>
           <div class="card" style="margin-bottom:0;">
-            <h4>Chamados por localidade</h4>
+            <h4>Chamados por grupo/localidade</h4>
             <div class="table-wrap" id="dashboardLocalidade"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="adminPanel" class="card hidden">
+        <h3>Administrador</h3>
+        <p class="muted">Gerencie listas dinâmicas do sistema.</p>
+
+        <div class="grid-2">
+          <div class="card" style="margin-bottom:0;">
+            <h4>Grupos de localidade</h4>
+            <div class="row">
+              <input id="novoGrupoLocalidade" placeholder="Novo grupo" />
+              <button id="btnAddGrupoLocalidade">Adicionar</button>
+            </div>
+            <div id="listaGruposAdmin"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Locais específicos</h4>
+            <div class="row">
+              <select id="grupoNovoLocal"></select>
+              <input id="novoLocalEspecifico" placeholder="Novo local específico" />
+              <button id="btnAddLocalEspecifico">Adicionar</button>
+            </div>
+            <div id="listaLocaisAdmin"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Marcas do computador</h4>
+            <div class="row">
+              <input id="novaMarca" placeholder="Nova marca" />
+              <button id="btnAddMarca">Adicionar</button>
+            </div>
+            <div id="listaMarcasAdmin"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Tipos de instalação</h4>
+            <div class="row">
+              <input id="novoTipoInstalacao" placeholder="Novo tipo" />
+              <select id="novoTipoExigeJust">
+                <option value="false">Sem justificativa</option>
+                <option value="true">Exige justificativa</option>
+              </select>
+              <button id="btnAddTipoInstalacao">Adicionar</button>
+            </div>
+            <div id="listaTiposAdmin"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Setores</h4>
+            <div class="row">
+              <input id="novoSetor" placeholder="Novo setor" />
+              <button id="btnAddSetor">Adicionar</button>
+            </div>
+            <div id="listaSetoresAdmin"></div>
+          </div>
+
+          <div class="card" style="margin-bottom:0; grid-column:1/-1;">
+            <h4>Softwares por setor</h4>
+            <div class="row">
+              <select id="adminSetorSoftware"></select>
+              <input id="novoSoftwareSetor" placeholder="Novo software" />
+              <button id="btnAddSoftwareSetor">Adicionar</button>
+            </div>
+            <div id="listaSoftwaresAdmin"></div>
           </div>
         </div>
       </div>
@@ -521,6 +603,11 @@
             <select id="tipoInstalacao"></select>
           </div>
 
+          <div id="tipoInstalacaoJustWrap" class="hidden" style="grid-column:1/-1;">
+            <label>Justificativa do tipo de instalação</label>
+            <textarea id="tipoInstalacaoJustificativa" placeholder="Explique o motivo da opção 'Outros'"></textarea>
+          </div>
+
           <div>
             <label>Office ativado?</label>
             <select id="officeAtivado">
@@ -536,8 +623,13 @@
           </div>
 
           <div>
-            <label>Localidade</label>
-            <select id="localidade"></select>
+            <label>Grupo da localidade</label>
+            <select id="grupoLocalidade"></select>
+          </div>
+
+          <div>
+            <label>Local específico</label>
+            <select id="localidadeEspecifica"></select>
           </div>
 
           <div id="proxyWrap" class="hidden">
@@ -549,18 +641,14 @@
             </select>
           </div>
 
-          <div id="setorPAWrap" class="hidden">
-            <label>Setor do PA</label>
-            <select id="setorPA"></select>
+          <div id="setorIGSWrap" class="hidden">
+            <label>Setor do IGS</label>
+            <select id="setorIGS"></select>
           </div>
 
-          <div id="financeiroSoftwaresWrap" class="hidden" style="grid-column:1/-1;">
-            <label>Marque os softwares que você instalou para o setor financeiro</label>
-            <div class="checkbox-group">
-              <label><input type="checkbox" class="financeiroSoftware" value="Quick"> Quick</label>
-              <label><input type="checkbox" class="financeiroSoftware" value="Banco do Brasil"> Banco do Brasil</label>
-              <label><input type="checkbox" class="financeiroSoftware" value="Sales"> Sales</label>
-            </div>
+          <div id="softwaresSetorWrap" class="hidden" style="grid-column:1/-1;">
+            <label>Softwares do setor</label>
+            <div id="softwaresSetorContainer" class="checkbox-group"></div>
           </div>
 
           <div>
@@ -615,8 +703,12 @@
             <input id="buscaPatrimonio" placeholder="Digite o patrimônio" />
           </div>
           <div>
-            <label>Localidade</label>
-            <select id="filtroLocalidade"></select>
+            <label>Grupo da localidade</label>
+            <select id="filtroGrupoLocalidade"></select>
+          </div>
+          <div>
+            <label>Local específico</label>
+            <select id="filtroLocalEspecifico"></select>
           </div>
           <div>
             <label>Técnico</label>
@@ -658,7 +750,7 @@
           <input id="mesRef" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
           <button id="btnExportar">Exportar CSV para Excel</button>
         </div>
-        <p class="muted small">A exportação inclui todos os campos do chamado.</p>
+        <p class="muted small">A exportação inclui grupo e local específico.</p>
       </div>
     </div>
   </div>
@@ -667,10 +759,6 @@
   <script>
     const RAM_OPTIONS = ["4 GB", "8 GB", "16 GB", "32 GB", "64 GB", "Outro"];
     const STORAGE_OPTIONS = ["SSD Keepdata", "SSD Ceamere", "SSD Kingston", "SSD Outros", "HDD Notebook", "HDD Computador"];
-    const LOCALIDADE_OPTIONS = ["PAMB", "Mandaqui", "Castelo", "Coleta Externa", "Centro Cirúrgico", "PA"];
-    const MARCA_OPTIONS = ["Lenovo ThinkCentre", "Lenovo ThinkCentre SFF", "Digital", "All in One", "Positivo"];
-    const INSTALACAO_OPTIONS = ["Instalação limpa", "Clone"];
-    const SETOR_PA_OPTIONS = ["Financeiro", "Ouvidoria", "RH"];
 
     const APP = {
       sessionUser: null,
@@ -679,7 +767,13 @@
       lastCalls: [],
       supabase: null,
       currentFilteredCalls: [],
-      allCallsForDashboard: []
+      allCallsForDashboard: [],
+      gruposLocalidade: [],
+      locaisEspecificos: [],
+      marcas: [],
+      tiposInstalacao: [],
+      setores: [],
+      softwaresPorSetor: []
     };
 
     const $ = (id) => document.getElementById(id);
@@ -693,14 +787,13 @@
       setTimeout(() => div.remove(), 3200);
     }
 
-    function fillSelect(selectId, options, placeholder = "Todos") {
+    function fillStaticSelect(selectId, options, placeholder = "Selecione") {
       const el = $(selectId);
       el.innerHTML = "";
       const first = document.createElement("option");
       first.value = "";
       first.textContent = placeholder;
       el.appendChild(first);
-
       options.forEach(item => {
         const option = document.createElement("option");
         option.value = item;
@@ -709,16 +802,23 @@
       });
     }
 
-    fillSelect("memoriaRam", RAM_OPTIONS, "Selecione");
-    fillSelect("armazenamentoTipo", STORAGE_OPTIONS, "Selecione");
-    fillSelect("localidade", LOCALIDADE_OPTIONS, "Selecione");
-    fillSelect("marcaComputador", MARCA_OPTIONS, "Selecione");
-    fillSelect("tipoInstalacao", INSTALACAO_OPTIONS, "Selecione");
-    fillSelect("setorPA", SETOR_PA_OPTIONS, "Selecione");
+    function fillRecordSelect(selectId, records, placeholder = "Selecione") {
+      const el = $(selectId);
+      el.innerHTML = "";
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder;
+      el.appendChild(first);
+      records.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.id;
+        option.textContent = item.nome;
+        el.appendChild(option);
+      });
+    }
 
-    fillSelect("filtroLocalidade", LOCALIDADE_OPTIONS, "Todas");
-    fillSelect("filtroMarca", MARCA_OPTIONS, "Todas");
-    fillSelect("filtroInstalacao", INSTALACAO_OPTIONS, "Todos");
+    fillStaticSelect("memoriaRam", RAM_OPTIONS, "Selecione");
+    fillStaticSelect("armazenamentoTipo", STORAGE_OPTIONS, "Selecione");
 
     const authMsg = $("authMsg");
     const formMsg = $("formMsg");
@@ -768,61 +868,195 @@
 
     $("officeAtivado").addEventListener("change", updateChecklist);
     $("proxyInicializar").addEventListener("change", updateChecklist);
-    $("localidade").addEventListener("change", () => {
-      const loc = $("localidade").value;
-      $("proxyWrap").classList.toggle("hidden", loc === "PAMB" || !loc);
-      $("setorPAWrap").classList.toggle("hidden", loc !== "PA");
-
-      if (loc === "PAMB" || !loc) {
-        $("proxyInicializar").value = "";
-      }
-
-      if (loc !== "PA") {
-        $("setorPA").value = "";
-        $("financeiroSoftwaresWrap").classList.add("hidden");
-        document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
-      }
-
-      updateChecklist();
-    });
-
-    $("setorPA").addEventListener("change", () => {
-      const setor = $("setorPA").value;
-      $("financeiroSoftwaresWrap").classList.toggle("hidden", setor !== "Financeiro");
-
-      if (setor !== "Financeiro") {
-        document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
-      }
-
-      updateChecklist();
-    });
-
-    document.querySelectorAll(".financeiroSoftware").forEach(cb => {
-      cb.addEventListener("change", updateChecklist);
-    });
 
     function getSupabase() {
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || window.SUPABASE_URL.includes("COLE_AQUI")) {
         throw new Error("Preencha o arquivo supabase-config.js com a URL e a ANON KEY do Supabase.");
       }
-
       if (!window.supabase || !window.supabase.createClient) {
         throw new Error("A biblioteca do Supabase não carregou corretamente.");
       }
-
       if (!APP.supabase) {
         APP.supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
       }
-
       return APP.supabase;
     }
 
+    async function loadDynamicOptions() {
+      const supabase = getSupabase();
+
+      const [
+        { data: grupos, error: grupoErr },
+        { data: locais, error: localErr },
+        { data: marcas, error: marcaErr },
+        { data: tipos, error: tipoErr },
+        { data: setores, error: setorErr }
+      ] = await Promise.all([
+        supabase.from("grupos_localidade").select("*").eq("ativo", true).order("nome"),
+        supabase.from("locais_especificos").select("*").eq("ativo", true).order("nome"),
+        supabase.from("marcas_computador").select("*").eq("ativo", true).order("nome"),
+        supabase.from("tipos_instalacao").select("*").eq("ativo", true).order("nome"),
+        supabase.from("setores").select("*").eq("ativo", true).order("nome")
+      ]);
+
+      if (grupoErr) throw grupoErr;
+      if (localErr) throw localErr;
+      if (marcaErr) throw marcaErr;
+      if (tipoErr) throw tipoErr;
+      if (setorErr) throw setorErr;
+
+      APP.gruposLocalidade = grupos || [];
+      APP.locaisEspecificos = locais || [];
+      APP.marcas = marcas || [];
+      APP.tiposInstalacao = tipos || [];
+      APP.setores = setores || [];
+
+      fillRecordSelect("grupoLocalidade", APP.gruposLocalidade, "Selecione");
+      fillRecordSelect("filtroGrupoLocalidade", APP.gruposLocalidade, "Todos");
+      fillRecordSelect("grupoNovoLocal", APP.gruposLocalidade, "Selecione o grupo");
+
+      fillRecordSelect("marcaComputador", APP.marcas, "Selecione");
+      fillRecordSelect("filtroMarca", APP.marcas, "Todas");
+
+      fillRecordSelect("tipoInstalacao", APP.tiposInstalacao, "Selecione");
+      fillRecordSelect("filtroInstalacao", APP.tiposInstalacao, "Todos");
+
+      fillRecordSelect("setorIGS", APP.setores, "Selecione");
+      fillRecordSelect("adminSetorSoftware", APP.setores, "Selecione o setor");
+
+      updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
+      updateLocalidadeEspecificaOptions("filtroGrupoLocalidade", "filtroLocalEspecifico", "Todos");
+    }
+
+    function updateLocalidadeEspecificaOptions(sourceGroupSelectId, targetSelectId, placeholder = "Selecione") {
+      const grupoId = $(sourceGroupSelectId).value;
+      const options = APP.locaisEspecificos.filter(x => !grupoId || x.grupo_id === grupoId);
+      fillRecordSelect(targetSelectId, options, placeholder);
+    }
+
+    async function loadSoftwaresBySetor(setorId) {
+      const container = $("softwaresSetorContainer");
+      container.innerHTML = "";
+
+      if (!setorId) {
+        $("softwaresSetorWrap").classList.add("hidden");
+        updateChecklist();
+        return;
+      }
+
+      const supabase = getSupabase();
+      const { data, error } = await supabase
+        .from("softwares_setor")
+        .select("*")
+        .eq("setor_id", setorId)
+        .eq("ativo", true)
+        .order("nome");
+
+      if (error) throw error;
+
+      APP.softwaresPorSetor = data || [];
+
+      if (!APP.softwaresPorSetor.length) {
+        $("softwaresSetorWrap").classList.remove("hidden");
+        container.innerHTML = `<div class="empty">Nenhum software cadastrado para este setor.</div>`;
+        updateChecklist();
+        return;
+      }
+
+      container.innerHTML = APP.softwaresPorSetor.map(software => `
+        <label>
+          <input type="checkbox" class="setorSoftware" value="${software.nome}">
+          ${software.nome}
+        </label>
+      `).join("");
+
+      document.querySelectorAll(".setorSoftware").forEach(cb => {
+        cb.addEventListener("change", updateChecklist);
+      });
+
+      $("softwaresSetorWrap").classList.remove("hidden");
+      updateChecklist();
+    }
+
+    function getTipoInstalacaoSelecionado() {
+      return APP.tiposInstalacao.find(t => t.id === $("tipoInstalacao").value);
+    }
+
+    function getGrupoSelecionado() {
+      return APP.gruposLocalidade.find(x => x.id === $("grupoLocalidade").value);
+    }
+
+    function getLocalEspecificoSelecionado() {
+      return APP.locaisEspecificos.find(x => x.id === $("localidadeEspecifica").value);
+    }
+
+    function getSetorSelecionado() {
+      return APP.setores.find(x => x.id === $("setorIGS").value);
+    }
+
+    $("tipoInstalacao").addEventListener("change", () => {
+      const tipo = getTipoInstalacaoSelecionado();
+      const exige = !!tipo?.exige_justificativa;
+      $("tipoInstalacaoJustWrap").classList.toggle("hidden", !exige);
+      if (!exige) $("tipoInstalacaoJustificativa").value = "";
+      updateChecklist();
+    });
+
+    $("grupoLocalidade").addEventListener("change", async () => {
+      updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
+      $("proxyInicializar").value = "";
+      $("setorIGS").value = "";
+      $("softwaresSetorContainer").innerHTML = "";
+      $("softwaresSetorWrap").classList.add("hidden");
+
+      const grupo = getGrupoSelecionado()?.nome || "";
+      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
+      $("proxyWrap").classList.add("hidden");
+      updateChecklist();
+    });
+
+    $("localidadeEspecifica").addEventListener("change", async () => {
+      const grupo = getGrupoSelecionado()?.nome || "";
+      const local = getLocalEspecificoSelecionado()?.nome || "";
+
+      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
+      $("proxyWrap").classList.toggle("hidden", !exigeProxy);
+
+      if (!exigeProxy) $("proxyInicializar").value = "";
+
+      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
+      if (grupo !== "IGS") {
+        $("setorIGS").value = "";
+        $("softwaresSetorContainer").innerHTML = "";
+        $("softwaresSetorWrap").classList.add("hidden");
+      }
+
+      updateChecklist();
+    });
+
+    $("setorIGS").addEventListener("change", async () => {
+      const grupo = getGrupoSelecionado()?.nome || "";
+      if (grupo === "IGS" && $("setorIGS").value) {
+        await loadSoftwaresBySetor($("setorIGS").value);
+      } else {
+        $("softwaresSetorWrap").classList.add("hidden");
+      }
+      updateChecklist();
+    });
+
+    $("filtroGrupoLocalidade").addEventListener("change", () => {
+      updateLocalidadeEspecificaOptions("filtroGrupoLocalidade", "filtroLocalEspecifico", "Todos");
+    });
+
     function updateChecklist() {
-      const localidade = $("localidade").value;
+      const grupo = getGrupoSelecionado()?.nome || "";
+      const local = getLocalEspecificoSelecionado()?.nome || "";
       const office = $("officeAtivado").value;
       const proxy = $("proxyInicializar").value;
-      const setor = $("setorPA").value;
-      const softwares = Array.from(document.querySelectorAll(".financeiroSoftware:checked")).length;
+      const setor = getSetorSelecionado()?.nome || "";
+      const tipo = getTipoInstalacaoSelecionado();
+      const softwares = Array.from(document.querySelectorAll(".setorSoftware:checked")).length;
+      const just = $("tipoInstalacaoJustificativa").value.trim();
 
       const items = [];
 
@@ -832,7 +1066,8 @@
         text: office ? office : "Pendente"
       });
 
-      if (localidade && localidade !== "PAMB") {
+      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
+      if (exigeProxy) {
         items.push({
           label: "Proxy removido do Inicializar",
           ok: proxy === "Sim",
@@ -840,9 +1075,9 @@
         });
       }
 
-      if (localidade === "PA") {
+      if (grupo === "IGS") {
         items.push({
-          label: "Setor do PA",
+          label: "Setor do IGS",
           ok: !!setor,
           text: setor || "Pendente"
         });
@@ -854,6 +1089,14 @@
             text: `${softwares} marcado(s)`
           });
         }
+      }
+
+      if (tipo?.exige_justificativa) {
+        items.push({
+          label: "Justificativa da instalação",
+          ok: !!just,
+          text: just ? "Preenchida" : "Pendente"
+        });
       }
 
       const html = items.length
@@ -888,13 +1131,8 @@
         const senha = $("regSenha").value;
         const senha2 = $("regSenha2").value;
 
-        if (!nome || !email || !senha || !senha2) {
-          return setMsg(authMsg, "Preencha todos os campos.", "err");
-        }
-
-        if (senha !== senha2) {
-          return setMsg(authMsg, "As senhas não coincidem.", "err");
-        }
+        if (!nome || !email || !senha || !senha2) return setMsg(authMsg, "Preencha todos os campos.", "err");
+        if (senha !== senha2) return setMsg(authMsg, "As senhas não coincidem.", "err");
 
         const supabase = getSupabase();
         const { data, error } = await supabase.auth.signUp({ email, password: senha });
@@ -931,6 +1169,7 @@
 
         APP.sessionUser = data.user;
         await loadProfile();
+        await loadDynamicOptions();
         enterApp();
         showToast("Login realizado com sucesso.", "success");
       } catch (e) {
@@ -942,12 +1181,7 @@
 
     async function loadProfile() {
       const supabase = getSupabase();
-      const { data, error } = await supabase
-        .from("tecnicos")
-        .select("*")
-        .eq("id", APP.sessionUser.id)
-        .single();
-
+      const { data, error } = await supabase.from("tecnicos").select("*").eq("id", APP.sessionUser.id).single();
       if (error) throw error;
       APP.profile = data;
     }
@@ -955,7 +1189,6 @@
     async function loadDashboard(month) {
       try {
         const supabase = getSupabase();
-
         let query = supabase.from("chamados").select("*").order("created_at", { ascending: false });
 
         if (month && /^\d{4}-\d{2}$/.test(month)) {
@@ -979,7 +1212,8 @@
       const total = items.length;
       const clones = items.filter(i => i.tipo_instalacao === "Clone").length;
       const limpas = items.filter(i => i.tipo_instalacao === "Instalação limpa").length;
-      const pams = items.filter(i => i.localidade === "PAMB").length;
+      const outros = items.filter(i => i.tipo_instalacao === "Outros").length;
+      const pamb = items.filter(i => i.grupo_localidade === "PAMB").length;
 
       $("dashboardCards").innerHTML = `
         <div class="metric">
@@ -998,9 +1232,9 @@
           <div class="sub">Total de clonagens</div>
         </div>
         <div class="metric">
-          <div class="label">Localidade PAMB</div>
-          <div class="value">${pams}</div>
-          <div class="sub">Chamados no PAMB</div>
+          <div class="label">Outros / PAMB</div>
+          <div class="value">${outros} / ${pamb}</div>
+          <div class="sub">Tipo "Outros" e grupo PAMB</div>
         </div>
       `;
 
@@ -1008,22 +1242,26 @@
       items.forEach(item => {
         const key = item.patrimonio || "Sem patrimônio";
         if (!patrimonioMap[key]) {
-          patrimonioMap[key] = { patrimonio: key, localidade: item.localidade || "-", total: 0 };
+          patrimonioMap[key] = {
+            patrimonio: key,
+            local: item.localidade || "-",
+            grupo: item.grupo_localidade || "-",
+            total: 0
+          };
         }
         patrimonioMap[key].total += 1;
       });
 
-      const topPatrimonios = Object.values(patrimonioMap)
-        .sort((a, b) => b.total - a.total)
-        .slice(0, 10);
+      const topPatrimonios = Object.values(patrimonioMap).sort((a, b) => b.total - a.total).slice(0, 10);
 
       $("dashboardPatrimonio").innerHTML = topPatrimonios.length
         ? `<table>
-            <tr><th>Patrimônio</th><th>Localidade</th><th>Qtd.</th></tr>
+            <tr><th>Patrimônio</th><th>Grupo</th><th>Local</th><th>Qtd.</th></tr>
             ${topPatrimonios.map(i => `
               <tr>
                 <td>${i.patrimonio}</td>
-                <td>${i.localidade}</td>
+                <td>${i.grupo}</td>
+                <td>${i.local}</td>
                 <td>${i.total}</td>
               </tr>
             `).join("")}
@@ -1032,21 +1270,26 @@
 
       const localidadeMap = {};
       items.forEach(item => {
-        const key = item.localidade || "Sem localidade";
-        if (!localidadeMap[key]) localidadeMap[key] = 0;
-        localidadeMap[key] += 1;
+        const key = `${item.grupo_localidade || "Sem grupo"} | ${item.localidade || "Sem local"}`;
+        if (!localidadeMap[key]) {
+          localidadeMap[key] = {
+            grupo: item.grupo_localidade || "Sem grupo",
+            local: item.localidade || "Sem local",
+            total: 0
+          };
+        }
+        localidadeMap[key].total += 1;
       });
 
-      const topLocalidades = Object.entries(localidadeMap)
-        .map(([localidade, total]) => ({ localidade, total }))
-        .sort((a, b) => b.total - a.total);
+      const topLocalidades = Object.values(localidadeMap).sort((a, b) => b.total - a.total);
 
       $("dashboardLocalidade").innerHTML = topLocalidades.length
         ? `<table>
-            <tr><th>Localidade</th><th>Qtd.</th></tr>
+            <tr><th>Grupo</th><th>Local</th><th>Qtd.</th></tr>
             ${topLocalidades.map(i => `
               <tr>
-                <td>${i.localidade}</td>
+                <td>${i.grupo}</td>
+                <td>${i.local}</td>
                 <td>${i.total}</td>
               </tr>
             `).join("")}
@@ -1054,10 +1297,219 @@
         : `<div class="empty">Sem dados para o período.</div>`;
     }
 
+    async function loadAdminData() {
+      await loadDynamicOptions();
+      renderAdminLists();
+      await loadAdminLocaisList();
+      await loadAdminSoftwaresList();
+    }
+
+    function renderSimpleAdminList(containerId, items, renameFnName, toggleFnName) {
+      $(containerId).innerHTML = items.length
+        ? items.map(item => `
+          <div class="admin-item">
+            <span>${item.nome} ${item.ativo ? badge("Ativo", "success") : badge("Inativo", "warning")}</span>
+            <div class="admin-item-actions">
+              <button class="ghost" onclick="${renameFnName}('${item.id}', '${String(item.nome).replace(/'/g, "\\'")}')">Editar</button>
+              <button class="ghost" onclick="${toggleFnName}('${item.id}', ${item.ativo})">${item.ativo ? "Desativar" : "Ativar"}</button>
+            </div>
+          </div>
+        `).join("")
+        : `<div class="empty">Nenhum item cadastrado.</div>`;
+    }
+
+    function renderAdminLists() {
+      renderSimpleAdminList("listaGruposAdmin", APP.gruposLocalidade, "renomearGrupoLocalidade", "toggleGrupoLocalidade");
+      renderSimpleAdminList("listaMarcasAdmin", APP.marcas, "renomearMarca", "toggleMarca");
+      renderSimpleAdminList("listaTiposAdmin", APP.tiposInstalacao, "renomearTipo", "toggleTipo");
+      renderSimpleAdminList("listaSetoresAdmin", APP.setores, "renomearSetor", "toggleSetor");
+    }
+
+    async function loadAdminLocaisList() {
+      const wrap = $("listaLocaisAdmin");
+      const grupoId = $("grupoNovoLocal").value;
+
+      let lista = APP.locaisEspecificos;
+      if (grupoId) lista = lista.filter(x => x.grupo_id === grupoId);
+
+      wrap.innerHTML = lista.length
+        ? lista.map(item => {
+            const grupo = APP.gruposLocalidade.find(g => g.id === item.grupo_id)?.nome || "-";
+            return `
+              <div class="admin-item">
+                <span>${item.nome} ${badge(grupo, "info")} ${item.ativo ? badge("Ativo", "success") : badge("Inativo", "warning")}</span>
+                <div class="admin-item-actions">
+                  <button class="ghost" onclick="renomearLocalEspecifico('${item.id}', '${String(item.nome).replace(/'/g, "\\'")}')">Editar</button>
+                  <button class="ghost" onclick="toggleLocalEspecifico('${item.id}', ${item.ativo})">${item.ativo ? "Desativar" : "Ativar"}</button>
+                </div>
+              </div>
+            `;
+          }).join("")
+        : `<div class="empty">Nenhum local específico cadastrado.</div>`;
+    }
+
+    async function loadAdminSoftwaresList() {
+      const setorId = $("adminSetorSoftware").value;
+      const wrap = $("listaSoftwaresAdmin");
+
+      if (!setorId) {
+        wrap.innerHTML = `<div class="empty">Selecione um setor para ver os softwares.</div>`;
+        return;
+      }
+
+      const supabase = getSupabase();
+      const { data, error } = await supabase.from("softwares_setor").select("*").eq("setor_id", setorId).order("nome");
+
+      if (error) {
+        wrap.innerHTML = `<div class="empty">Erro ao carregar softwares.</div>`;
+        return;
+      }
+
+      wrap.innerHTML = data.length
+        ? data.map(item => `
+          <div class="admin-item">
+            <span>${item.nome} ${item.ativo ? badge("Ativo", "success") : badge("Inativo", "warning")}</span>
+            <div class="admin-item-actions">
+              <button class="ghost" onclick="renomearSoftware('${item.id}', '${String(item.nome).replace(/'/g, "\\'")}')">Editar</button>
+              <button class="ghost" onclick="toggleSoftware('${item.id}', ${item.ativo})">${item.ativo ? "Desativar" : "Ativar"}</button>
+            </div>
+          </div>
+        `).join("")
+        : `<div class="empty">Nenhum software cadastrado para este setor.</div>`;
+    }
+
+    async function addGrupoLocalidade() {
+      const nome = $("novoGrupoLocalidade").value.trim();
+      if (!nome) return showToast("Informe o grupo.", "error");
+      const { error } = await getSupabase().from("grupos_localidade").insert({ nome });
+      if (error) return showToast(error.message, "error");
+      $("novoGrupoLocalidade").value = "";
+      await loadAdminData();
+      showToast("Grupo adicionado.", "success");
+    }
+
+    async function addLocalEspecifico() {
+      const grupoId = $("grupoNovoLocal").value;
+      const nome = $("novoLocalEspecifico").value.trim();
+      if (!grupoId) return showToast("Selecione o grupo.", "error");
+      if (!nome) return showToast("Informe o local específico.", "error");
+      const { error } = await getSupabase().from("locais_especificos").insert({ grupo_id: grupoId, nome });
+      if (error) return showToast(error.message, "error");
+      $("novoLocalEspecifico").value = "";
+      await loadAdminData();
+      showToast("Local específico adicionado.", "success");
+    }
+
+    async function addMarca() {
+      const nome = $("novaMarca").value.trim();
+      if (!nome) return showToast("Informe a marca.", "error");
+      const { error } = await getSupabase().from("marcas_computador").insert({ nome });
+      if (error) return showToast(error.message, "error");
+      $("novaMarca").value = "";
+      await loadAdminData();
+      showToast("Marca adicionada.", "success");
+    }
+
+    async function addTipoInstalacao() {
+      const nome = $("novoTipoInstalacao").value.trim();
+      const exige = $("novoTipoExigeJust").value === "true";
+      if (!nome) return showToast("Informe o tipo de instalação.", "error");
+      const { error } = await getSupabase().from("tipos_instalacao").insert({ nome, exige_justificativa: exige });
+      if (error) return showToast(error.message, "error");
+      $("novoTipoInstalacao").value = "";
+      $("novoTipoExigeJust").value = "false";
+      await loadAdminData();
+      showToast("Tipo de instalação adicionado.", "success");
+    }
+
+    async function addSetor() {
+      const nome = $("novoSetor").value.trim();
+      if (!nome) return showToast("Informe o setor.", "error");
+      const { error } = await getSupabase().from("setores").insert({ nome });
+      if (error) return showToast(error.message, "error");
+      $("novoSetor").value = "";
+      await loadAdminData();
+      showToast("Setor adicionado.", "success");
+    }
+
+    async function addSoftwareSetor() {
+      const setorId = $("adminSetorSoftware").value;
+      const nome = $("novoSoftwareSetor").value.trim();
+      if (!setorId) return showToast("Selecione o setor.", "error");
+      if (!nome) return showToast("Informe o software.", "error");
+      const { error } = await getSupabase().from("softwares_setor").insert({ setor_id: setorId, nome });
+      if (error) return showToast(error.message, "error");
+      $("novoSoftwareSetor").value = "";
+      await loadAdminSoftwaresList();
+      showToast("Software adicionado.", "success");
+    }
+
+    async function renameRecord(table, id, oldName) {
+      const novoNome = prompt("Novo nome:", oldName);
+      if (!novoNome || novoNome.trim() === oldName) return;
+      const { error } = await getSupabase().from(table).update({ nome: novoNome.trim() }).eq("id", id);
+      if (error) return showToast(error.message, "error");
+      await loadAdminData();
+      showToast("Item atualizado.", "success");
+    }
+
+    async function toggleRecord(table, id, current) {
+      const { error } = await getSupabase().from(table).update({ ativo: !current }).eq("id", id);
+      if (error) return showToast(error.message, "error");
+      await loadAdminData();
+      showToast("Status atualizado.", "success");
+    }
+
+    window.renomearGrupoLocalidade = (id, nome) => renameRecord("grupos_localidade", id, nome);
+    window.renomearLocalEspecifico = (id, nome) => renameRecord("locais_especificos", id, nome);
+    window.renomearMarca = (id, nome) => renameRecord("marcas_computador", id, nome);
+    window.renomearSetor = (id, nome) => renameRecord("setores", id, nome);
+
+    window.renomearTipo = async (id, nome) => {
+      const novoNome = prompt("Novo nome:", nome);
+      if (!novoNome || novoNome.trim() === nome) return;
+      const exige = confirm("Esse tipo deve exigir justificativa?");
+      const { error } = await getSupabase().from("tipos_instalacao").update({
+        nome: novoNome.trim(),
+        exige_justificativa: exige
+      }).eq("id", id);
+      if (error) return showToast(error.message, "error");
+      await loadAdminData();
+      showToast("Tipo atualizado.", "success");
+    };
+
+    window.toggleGrupoLocalidade = (id, current) => toggleRecord("grupos_localidade", id, current);
+    window.toggleLocalEspecifico = (id, current) => toggleRecord("locais_especificos", id, current);
+    window.toggleMarca = (id, current) => toggleRecord("marcas_computador", id, current);
+    window.toggleTipo = (id, current) => toggleRecord("tipos_instalacao", id, current);
+    window.toggleSetor = (id, current) => toggleRecord("setores", id, current);
+
+    window.renomearSoftware = async (id, nome) => {
+      const novoNome = prompt("Novo nome do software:", nome);
+      if (!novoNome || novoNome.trim() === nome) return;
+      const { error } = await getSupabase().from("softwares_setor").update({ nome: novoNome.trim() }).eq("id", id);
+      if (error) return showToast(error.message, "error");
+      await loadAdminSoftwaresList();
+      if ($("setorIGS").value) await loadSoftwaresBySetor($("setorIGS").value);
+      showToast("Software atualizado.", "success");
+    };
+
+    window.toggleSoftware = async (id, current) => {
+      const { error } = await getSupabase().from("softwares_setor").update({ ativo: !current }).eq("id", id);
+      if (error) return showToast(error.message, "error");
+      await loadAdminSoftwaresList();
+      if ($("setorIGS").value) await loadSoftwaresBySetor($("setorIGS").value);
+      showToast("Status do software atualizado.", "success");
+    };
+
     function enterApp() {
       $("authView").classList.add("hidden");
       $("appView").classList.remove("hidden");
       $("userInfo").textContent = `${APP.profile.nome} • ${APP.profile.email}`;
+      if (APP.profile.role === "admin") {
+        $("adminPanel").classList.remove("hidden");
+        loadAdminData();
+      }
       loadDashboard($("dashboardMonth").value.trim());
     }
 
@@ -1065,10 +1517,10 @@
       try {
         const supabase = getSupabase();
         const { data } = await supabase.auth.getSession();
-
         if (data.session?.user) {
           APP.sessionUser = data.session.user;
           await loadProfile();
+          await loadDynamicOptions();
           enterApp();
         }
       } catch (e) {
@@ -1080,30 +1532,49 @@
       const memoriaBase = $("memoriaRam").value;
       const memoriaFinal = memoriaBase === "Outro" ? $("memoriaRamOutro").value.trim() : memoriaBase;
 
-      const softwaresFinanceiro = Array.from(
-        document.querySelectorAll(".financeiroSoftware:checked")
-      ).map(cb => cb.value);
+      const softwaresSetor = Array.from(document.querySelectorAll(".setorSoftware:checked")).map(cb => cb.value);
+
+      const grupoObj = getGrupoSelecionado();
+      const localObj = getLocalEspecificoSelecionado();
+      const setorObj = getSetorSelecionado();
+      const tipoObj = getTipoInstalacaoSelecionado();
+      const marcaObj = APP.marcas.find(x => x.id === $("marcaComputador").value);
 
       return {
         numero_chamado: $("numeroChamado").value.trim(),
         patrimonio: $("patrimonio").value.trim().toUpperCase(),
-        marca_computador: $("marcaComputador").value,
-        tipo_instalacao: $("tipoInstalacao").value,
+
+        grupo_localidade_id: $("grupoLocalidade").value || null,
+        grupo_localidade: grupoObj?.nome || "",
+
+        localidade_id: $("localidadeEspecifica").value || null,
+        localidade: localObj?.nome || "",
+
+        marca_computador_id: $("marcaComputador").value || null,
+        marca_computador: marcaObj?.nome || "",
+
+        tipo_instalacao_id: $("tipoInstalacao").value || null,
+        tipo_instalacao: tipoObj?.nome || "",
+        tipo_instalacao_justificativa: $("tipoInstalacaoJustificativa").value.trim(),
+
         office_ativado: $("officeAtivado").value,
         ip: $("ip").value.trim(),
-        localidade: $("localidade").value,
-        proxy_inicializar: $("localidade").value && $("localidade").value !== "PAMB"
+
+        proxy_inicializar: (grupoObj?.nome === "PAMB" || localObj?.nome === "PAMB - Agência ICHC")
           ? $("proxyInicializar").value
           : "",
-        setor_pa: $("localidade").value === "PA" ? $("setorPA").value : "",
-        softwares_financeiro: $("localidade").value === "PA" && $("setorPA").value === "Financeiro"
-          ? softwaresFinanceiro.join(", ")
-          : "",
+
+        setor_id: $("setorIGS").value || null,
+        setor_pa: setorObj?.nome || "",
+        softwares_financeiro: softwaresSetor.join(", "),
+        softwares_setor: softwaresSetor.join(", "),
+
         memoria_ram: memoriaFinal,
         armazenamento_tipo: $("armazenamentoTipo").value,
         armazenamento_outros: $("armazenamentoTipo").value === "SSD Outros"
           ? $("armazenamentoOutros").value.trim()
           : "",
+
         problema: $("problema").value.trim(),
         resolucao: $("resolucao").value.trim(),
         tecnico_id: APP.profile.id,
@@ -1115,11 +1586,12 @@
       if (
         !p.numero_chamado ||
         !p.patrimonio ||
-        !p.marca_computador ||
-        !p.tipo_instalacao ||
+        !p.grupo_localidade_id ||
+        !p.localidade_id ||
+        !p.marca_computador_id ||
+        !p.tipo_instalacao_id ||
         !p.office_ativado ||
         !p.ip ||
-        !p.localidade ||
         !p.memoria_ram ||
         !p.armazenamento_tipo ||
         !p.problema ||
@@ -1136,19 +1608,23 @@
         throw new Error("É necessário Office ativado para prosseguir.");
       }
 
-      if (p.localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
-        throw new Error("É necessário retirar o proxy em máquinas do PA para prosseguir.");
+      const exigeProxy = p.grupo_localidade === "PAMB" || p.localidade === "PAMB - Agência ICHC";
+      if (exigeProxy && p.proxy_inicializar !== "Sim") {
+        throw new Error("É necessário retirar o proxy do Inicializar para prosseguir.");
       }
 
-      if (p.localidade === "PA" && !p.setor_pa) {
-        throw new Error("Selecione o setor do PA.");
+      if (p.tipo_instalacao === "Outros" && !p.tipo_instalacao_justificativa) {
+        throw new Error("Informe a justificativa para o tipo de instalação 'Outros'.");
       }
 
-      if (p.localidade === "PA" && p.setor_pa === "Financeiro") {
+      if (p.grupo_localidade === "IGS" && !p.setor_id) {
+        throw new Error("Selecione o setor do IGS.");
+      }
+
+      if (p.setor_pa === "Financeiro") {
         const qtd = p.softwares_financeiro
           ? p.softwares_financeiro.split(",").map(s => s.trim()).filter(Boolean).length
           : 0;
-
         if (qtd < 2) {
           throw new Error("No setor Financeiro é necessário marcar no mínimo 2 softwares.");
         }
@@ -1160,27 +1636,31 @@
       $("formTitle").textContent = "Novo chamado";
       $("numeroChamado").value = "";
       $("patrimonio").value = "";
+      $("grupoLocalidade").value = "";
+      $("localidadeEspecifica").innerHTML = "";
       $("marcaComputador").value = "";
       $("tipoInstalacao").value = "";
+      $("tipoInstalacaoJustificativa").value = "";
       $("officeAtivado").value = "";
       $("ip").value = "";
-      $("localidade").value = "";
       $("proxyInicializar").value = "";
-      $("setorPA").value = "";
+      $("setorIGS").value = "";
       $("memoriaRam").value = "";
       $("memoriaRamOutro").value = "";
       $("armazenamentoTipo").value = "";
       $("armazenamentoOutros").value = "";
       $("problema").value = "";
       $("resolucao").value = "";
-      document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
+      $("softwaresSetorContainer").innerHTML = "";
       $("ramOutroWrap").classList.add("hidden");
       $("outroStorageWrap").classList.add("hidden");
       $("proxyWrap").classList.add("hidden");
-      $("setorPAWrap").classList.add("hidden");
-      $("financeiroSoftwaresWrap").classList.add("hidden");
+      $("setorIGSWrap").classList.add("hidden");
+      $("softwaresSetorWrap").classList.add("hidden");
+      $("tipoInstalacaoJustWrap").classList.add("hidden");
       $("btnCancelarEdicao").classList.add("hidden");
       setMsg(formMsg, "");
+      updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
       updateChecklist();
     }
 
@@ -1191,32 +1671,25 @@
         validatePayload(payload);
 
         if (APP.editingId) {
-          const { data: prev, error: prevError } = await supabase
-            .from("chamados")
-            .select("*")
-            .eq("id", APP.editingId)
-            .single();
-
+          const { data: prev, error: prevError } = await supabase.from("chamados").select("*").eq("id", APP.editingId).single();
           if (prevError) throw prevError;
 
-          const { error } = await supabase
-            .from("chamados")
-            .update(payload)
-            .eq("id", APP.editingId);
-
+          const { error } = await supabase.from("chamados").update(payload).eq("id", APP.editingId);
           if (error) throw error;
 
           const labels = {
             numero_chamado: "Número do chamado",
             patrimonio: "Patrimônio",
+            grupo_localidade: "Grupo da localidade",
+            localidade: "Local específico",
             marca_computador: "Marca do computador",
             tipo_instalacao: "Tipo de instalação",
+            tipo_instalacao_justificativa: "Justificativa da instalação",
             office_ativado: "Office ativado",
             ip: "IP",
-            localidade: "Localidade",
             proxy_inicializar: "Proxy Inicializar",
-            setor_pa: "Setor PA",
-            softwares_financeiro: "Softwares Financeiro",
+            setor_pa: "Setor IGS",
+            softwares_financeiro: "Softwares do setor",
             memoria_ram: "Memória RAM",
             armazenamento_tipo: "Armazenamento",
             armazenamento_outros: "Detalhe armazenamento",
@@ -1242,12 +1715,7 @@
           setMsg(formMsg, "Chamado atualizado com sucesso.", "ok");
           showToast("Chamado atualizado com sucesso.", "success");
         } else {
-          const { data, error } = await supabase
-            .from("chamados")
-            .insert(payload)
-            .select()
-            .single();
-
+          const { data, error } = await supabase.from("chamados").insert(payload).select().single();
           if (error) throw error;
 
           const { error: auditError } = await supabase.from("historico_alteracoes").insert({
@@ -1276,17 +1744,19 @@
 
     function buildFiltersQuery(query) {
       const patrimonio = $("buscaPatrimonio").value.trim().toUpperCase();
-      const localidade = $("filtroLocalidade").value;
+      const grupo = $("filtroGrupoLocalidade").value;
+      const local = $("filtroLocalEspecifico").value;
       const tecnico = $("filtroTecnico").value.trim();
       const marca = $("filtroMarca").value;
       const instalacao = $("filtroInstalacao").value;
       const mes = $("filtroMes").value.trim();
 
       if (patrimonio) query = query.ilike("patrimonio", `%${patrimonio}%`);
-      if (localidade) query = query.eq("localidade", localidade);
+      if (grupo) query = query.eq("grupo_localidade_id", grupo);
+      if (local) query = query.eq("localidade_id", local);
       if (tecnico) query = query.ilike("tecnico_nome", `%${tecnico}%`);
-      if (marca) query = query.eq("marca_computador", marca);
-      if (instalacao) query = query.eq("tipo_instalacao", instalacao);
+      if (marca) query = query.eq("marca_computador_id", marca);
+      if (instalacao) query = query.eq("tipo_instalacao_id", instalacao);
 
       if (mes && /^\d{4}-\d{2}$/.test(mes)) {
         const startDate = new Date(mes + "-01T00:00:00");
@@ -1343,9 +1813,9 @@
             <h4>${item.numero_chamado}</h4>
             <div class="meta">
               ${badge(item.patrimonio, "info")}
-              ${badge(item.localidade || "-", "warning")}
+              ${badge(item.grupo_localidade || "-", "warning")}
+              ${badge(item.localidade || "-", "info")}
               ${badge(item.tecnico_nome || "-", "success")}
-              ${badge(item.tipo_instalacao || "-", "info")}
             </div>
             <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
             <p><strong>IP:</strong> ${item.ip || "-"}</p>
@@ -1373,14 +1843,15 @@
         <tr>
           <th>Chamado</th>
           <th>Patrimônio</th>
+          <th>Grupo</th>
+          <th>Local</th>
           <th>Marca</th>
           <th>Instalação</th>
           <th>Office</th>
           <th>Proxy</th>
-          <th>Setor PA</th>
+          <th>Setor IGS</th>
           <th>Softwares</th>
           <th>IP</th>
-          <th>Localidade</th>
           <th>Técnico</th>
           <th>RAM</th>
           <th>Armazenamento</th>
@@ -1395,6 +1866,8 @@
         html += `<tr>
           <td>${item.numero_chamado}</td>
           <td>${item.patrimonio}</td>
+          <td>${item.grupo_localidade || "-"}</td>
+          <td>${item.localidade || "-"}</td>
           <td>${item.marca_computador || "-"}</td>
           <td>${item.tipo_instalacao || "-"}</td>
           <td>${item.office_ativado || "-"}</td>
@@ -1402,7 +1875,6 @@
           <td>${item.setor_pa || "-"}</td>
           <td>${item.softwares_financeiro || "-"}</td>
           <td>${item.ip || "-"}</td>
-          <td>${item.localidade || "-"}</td>
           <td>${item.tecnico_nome || "-"}</td>
           <td>${item.memoria_ram}</td>
           <td>${storage}</td>
@@ -1455,19 +1927,21 @@
             <h4>Identificação</h4>
             <p><strong>Número do chamado:</strong> ${item.numero_chamado}</p>
             <p><strong>Patrimônio:</strong> ${item.patrimonio}</p>
+            <p><strong>Grupo:</strong> ${item.grupo_localidade || "-"}</p>
+            <p><strong>Local:</strong> ${item.localidade || "-"}</p>
             <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
             <p><strong>IP:</strong> ${item.ip || "-"}</p>
-            <p><strong>Localidade:</strong> ${item.localidade || "-"}</p>
             <p><strong>Técnico:</strong> ${item.tecnico_nome || "-"}</p>
           </div>
 
           <div class="card" style="margin-bottom:0;">
             <h4>Instalação</h4>
             <p><strong>Tipo:</strong> ${item.tipo_instalacao || "-"}</p>
+            <p><strong>Justificativa:</strong> ${item.tipo_instalacao_justificativa || "-"}</p>
             <p><strong>Office ativado:</strong> ${item.office_ativado || "-"}</p>
             <p><strong>Proxy Inicializar:</strong> ${item.proxy_inicializar || "-"}</p>
-            <p><strong>Setor PA:</strong> ${item.setor_pa || "-"}</p>
-            <p><strong>Softwares Financeiro:</strong> ${item.softwares_financeiro || "-"}</p>
+            <p><strong>Setor IGS:</strong> ${item.setor_pa || "-"}</p>
+            <p><strong>Softwares do setor:</strong> ${item.softwares_financeiro || "-"}</p>
           </div>
 
           <div class="card" style="margin-bottom:0;">
@@ -1502,12 +1976,10 @@
     };
 
     $("detailsModalBackdrop").addEventListener("click", (e) => {
-      if (e.target.id === "detailsModalBackdrop") {
-        $("detailsModalBackdrop").classList.add("hidden");
-      }
+      if (e.target.id === "detailsModalBackdrop") $("detailsModalBackdrop").classList.add("hidden");
     });
 
-    window.editarChamado = function(id) {
+    window.editarChamado = async function(id) {
       const item = APP.lastCalls.find(x => x.id === id);
       if (!item) return;
 
@@ -1515,21 +1987,35 @@
       $("formTitle").textContent = "Editar chamado";
       $("numeroChamado").value = item.numero_chamado || "";
       $("patrimonio").value = item.patrimonio || "";
-      $("marcaComputador").value = item.marca_computador || "";
-      $("tipoInstalacao").value = item.tipo_instalacao || "";
+      $("grupoLocalidade").value = item.grupo_localidade_id || "";
+      updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
+      $("localidadeEspecifica").value = item.localidade_id || "";
+      $("marcaComputador").value = item.marca_computador_id || "";
+      $("tipoInstalacao").value = item.tipo_instalacao_id || "";
+      $("tipoInstalacaoJustificativa").value = item.tipo_instalacao_justificativa || "";
       $("officeAtivado").value = item.office_ativado || "";
       $("ip").value = item.ip || "";
-      $("localidade").value = item.localidade || "";
       $("proxyInicializar").value = item.proxy_inicializar || "";
-      $("setorPA").value = item.setor_pa || "";
+      $("setorIGS").value = item.setor_id || "";
 
-      $("proxyWrap").classList.toggle("hidden", !item.localidade || item.localidade === "PAMB");
-      $("setorPAWrap").classList.toggle("hidden", item.localidade !== "PA");
-      $("financeiroSoftwaresWrap").classList.toggle("hidden", item.setor_pa !== "Financeiro");
+      const tipo = getTipoInstalacaoSelecionado();
+      $("tipoInstalacaoJustWrap").classList.toggle("hidden", !tipo?.exige_justificativa);
 
-      document.querySelectorAll(".financeiroSoftware").forEach(cb => {
-        cb.checked = (item.softwares_financeiro || "").split(",").map(s => s.trim()).includes(cb.value);
-      });
+      const grupo = getGrupoSelecionado()?.nome || "";
+      const local = getLocalEspecificoSelecionado()?.nome || "";
+      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
+      $("proxyWrap").classList.toggle("hidden", !exigeProxy);
+      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
+
+      if ($("setorIGS").value) {
+        await loadSoftwaresBySetor($("setorIGS").value);
+        const marcados = (item.softwares_financeiro || "").split(",").map(s => s.trim()).filter(Boolean);
+        document.querySelectorAll(".setorSoftware").forEach(cb => {
+          cb.checked = marcados.includes(cb.value);
+        });
+      } else {
+        $("softwaresSetorWrap").classList.add("hidden");
+      }
 
       if (RAM_OPTIONS.includes(item.memoria_ram)) {
         $("memoriaRam").value = item.memoria_ram;
@@ -1577,14 +2063,16 @@
           "Data",
           "Número do chamado",
           "Patrimônio",
+          "Grupo da localidade",
+          "Local específico",
           "Marca",
           "Tipo de instalação",
+          "Justificativa instalação",
           "Office ativado",
           "Proxy removido do Inicializar",
-          "Setor PA",
-          "Softwares Financeiro",
+          "Setor IGS",
+          "Softwares do setor",
           "IP",
-          "Localidade",
           "Técnico",
           "Memória RAM",
           "Armazenamento",
@@ -1601,14 +2089,16 @@
             new Date(item.created_at).toLocaleString("pt-BR"),
             item.numero_chamado,
             item.patrimonio,
+            item.grupo_localidade || "",
+            item.localidade || "",
             item.marca_computador || "",
             item.tipo_instalacao || "",
+            item.tipo_instalacao_justificativa || "",
             item.office_ativado || "",
             item.proxy_inicializar || "",
             item.setor_pa || "",
             item.softwares_financeiro || "",
             item.ip || "",
-            item.localidade || "",
             item.tecnico_nome || "",
             item.memoria_ram,
             storage,
@@ -1650,13 +2140,23 @@
 
     $("btnLimparFiltros").onclick = () => {
       $("buscaPatrimonio").value = "";
-      $("filtroLocalidade").value = "";
+      $("filtroGrupoLocalidade").value = "";
+      updateLocalidadeEspecificaOptions("filtroGrupoLocalidade", "filtroLocalEspecifico", "Todos");
       $("filtroTecnico").value = "";
       $("filtroMarca").value = "";
       $("filtroInstalacao").value = "";
       $("filtroMes").value = "";
       buscar();
     };
+
+    $("btnAddGrupoLocalidade").onclick = addGrupoLocalidade;
+    $("btnAddLocalEspecifico").onclick = addLocalEspecifico;
+    $("btnAddMarca").onclick = addMarca;
+    $("btnAddTipoInstalacao").onclick = addTipoInstalacao;
+    $("btnAddSetor").onclick = addSetor;
+    $("btnAddSoftwareSetor").onclick = addSoftwareSetor;
+    $("adminSetorSoftware").addEventListener("change", loadAdminSoftwaresList);
+    $("grupoNovoLocal").addEventListener("change", loadAdminLocaisList);
 
     updateChecklist();
     restoreSession();
