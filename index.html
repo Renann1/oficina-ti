@@ -509,11 +509,11 @@
       }
 
       if (p.office_ativado !== "Sim") {
-        throw new Error("É necessário marcar 'Sim' em Office ativado para prosseguir.");
+        throw new Error("É necessário ativar o Office para prosseguir.");
       }
 
       if (p.localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
-        throw new Error("É necessário confirmar 'Sim' em retirou o proxy do Inicializar para prosseguir.");
+        throw new Error("É necessário retirar o proxy do Inicializar para máquinas do PA.");
       }
 
       if (p.localidade === "PA" && !p.setor_pa) {
