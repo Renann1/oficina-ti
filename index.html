@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <link rel="icon" type="image/png" href="https://media.licdn.com/dms/image/v2/C4D0BAQGpz2XU_DFZrw/company-logo_200_200/company-logo_200_200/0/1631363400585/mwmicroware_logo?e=2147483647&v=beta&t=K_wYmzSBRukQarDeLvYoS8Fn0h_ZFqwpNc_u0P1GSpg">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Oficina MW Microware</title>
+  <link rel="icon" type="image/png" href="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg:#f3f4f6; --card:#fff; --text:#111827; --muted:#6b7280;
-      --primary:#2563eb; --primary-dark:#1d4ed8; --border:#e5e7eb;
+      --primary:#000000; --primary-dark:#333333; --border:#e5e7eb;
     }
     * { box-sizing: border-box; }
     body { margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text); }
@@ -37,24 +37,29 @@
     .ok { color:#065f46; }
     .err { color:#b91c1c; }
     .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-    code { background:#f3f4f6; padding:2px 6px; border-radius:6px; }
     .logo { max-width:280px; height:auto; }
-
-    :root {
-  --bg:#f3f4f6;
-  --card:#fff;
-  --text:#111827;
-  --muted:#6b7280;
-  --primary:#5e5e5e;
-  --primary-dark:#1a1a1a;
-  --border:#e5e7eb;
-}
+    .checkbox-group {
+      display:flex;
+      gap:20px;
+      flex-wrap:wrap;
+      margin-top:8px;
+    }
+    .checkbox-group label {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-weight:400;
+      margin-bottom:0;
+    }
+    .checkbox-group input {
+      width:auto;
+      margin:0;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div id="authView" class="card">
-      <center>
         <img
           class="logo"
           src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png"
@@ -121,47 +126,100 @@
             <label>Número do chamado</label>
             <input id="numeroChamado" placeholder="CH-1025" />
           </div>
+
           <div>
             <label>Patrimônio</label>
             <input id="patrimonio" placeholder="PAT-8841" />
           </div>
+
+          <div>
+            <label>Marca do computador</label>
+            <select id="marcaComputador"></select>
+          </div>
+
+          <div>
+            <label>Tipo de instalação</label>
+            <select id="tipoInstalacao"></select>
+          </div>
+
+          <div>
+            <label>Office ativado?</label>
+            <select id="officeAtivado">
+              <option value="">Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+
           <div>
             <label>IP</label>
             <input id="ip" placeholder="192.168.0.25" />
           </div>
+
           <div>
             <label>Localidade</label>
             <select id="localidade"></select>
           </div>
+
+          <div id="proxyWrap" class="hidden">
+            <label>Retirou o proxy do Inicializar?</label>
+            <select id="proxyInicializar">
+              <option value="">Selecione</option>
+              <option value="Sim">Sim</option>
+              <option value="Não">Não</option>
+            </select>
+          </div>
+
+          <div id="setorPAWrap" class="hidden">
+            <label>Setor do PA</label>
+            <select id="setorPA"></select>
+          </div>
+
+          <div id="financeiroSoftwaresWrap" class="hidden" style="grid-column:1/-1;">
+            <label>Marque os softwares que você instalou para o setor financeiro</label>
+            <div class="checkbox-group">
+              <label><input type="checkbox" class="financeiroSoftware" value="Quick"> Quick</label>
+              <label><input type="checkbox" class="financeiroSoftware" value="Banco do Brasil"> Banco do Brasil</label>
+              <label><input type="checkbox" class="financeiroSoftware" value="Sales"> Sales</label>
+            </div>
+          </div>
+
           <div>
             <label>Memória RAM</label>
             <select id="memoriaRam"></select>
           </div>
+
           <div id="ramOutroWrap" class="hidden">
             <label>Outro valor de RAM</label>
             <input id="memoriaRamOutro" placeholder="Ex.: 12 GB" />
           </div>
+
           <div>
             <label>Armazenamento</label>
             <select id="armazenamentoTipo"></select>
           </div>
+
           <div id="outroStorageWrap" class="hidden">
             <label>Marca/modelo do SSD</label>
             <input id="armazenamentoOutros" placeholder="Ex.: WD Green 240 GB" />
           </div>
+
           <div style="grid-column:1/-1;">
             <label>Problema</label>
             <textarea id="problema" placeholder="Descreva o problema"></textarea>
           </div>
+
           <div style="grid-column:1/-1;">
             <label>Resolução</label>
             <textarea id="resolucao" placeholder="Descreva a resolução"></textarea>
           </div>
         </div>
+
         <div class="row" style="margin-top:12px;">
           <button id="btnSalvar">Salvar chamado</button>
           <button id="btnCancelarEdicao" class="ghost hidden">Cancelar edição</button>
         </div>
+
         <p id="formMsg" class="small muted" style="margin-top:10px;"></p>
       </div>
 
@@ -178,8 +236,11 @@
       <div class="card">
         <h3>Exportar relatório mensal</h3>
         <div class="row">
-          <input id="mesRef" type="month" />
+          <input id="mesRef" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
           <button id="btnExportar">Exportar CSV para Excel</button>
+        </div>
+        <p class="muted small">A exportação inclui técnico, IP, localidade, proxy, setor e softwares.</p>
+      </div>
     </div>
   </div>
 
@@ -188,6 +249,9 @@
     const RAM_OPTIONS = ["4 GB", "8 GB", "16 GB", "32 GB", "64 GB", "Outro"];
     const STORAGE_OPTIONS = ["SSD Keepdata", "SSD Ceamere", "SSD Kingston", "SSD Outros", "HDD Notebook", "HDD Computador"];
     const LOCALIDADE_OPTIONS = ["PAMB", "Mandaqui", "Castelo", "Coleta Externa", "Centro Cirúrgico", "PA"];
+    const MARCA_OPTIONS = ["Lenovo ThinkCentre", "Lenovo ThinkCentre SFF", "Digital", "All in One", "Positivo"];
+    const INSTALACAO_OPTIONS = ["Instalação limpa", "Clone"];
+    const SETOR_PA_OPTIONS = ["Financeiro", "Ouvidoria", "RH"];
 
     const APP = {
       sessionUser: null,
@@ -218,6 +282,9 @@
     fillSelect("memoriaRam", RAM_OPTIONS);
     fillSelect("armazenamentoTipo", STORAGE_OPTIONS);
     fillSelect("localidade", LOCALIDADE_OPTIONS);
+    fillSelect("marcaComputador", MARCA_OPTIONS);
+    fillSelect("tipoInstalacao", INSTALACAO_OPTIONS);
+    fillSelect("setorPA", SETOR_PA_OPTIONS);
 
     const authMsg = $("authMsg");
     const formMsg = $("formMsg");
@@ -250,6 +317,31 @@
 
     $("armazenamentoTipo").addEventListener("change", () => {
       $("outroStorageWrap").classList.toggle("hidden", $("armazenamentoTipo").value !== "SSD Outros");
+    });
+
+    $("localidade").addEventListener("change", () => {
+      const loc = $("localidade").value;
+      $("proxyWrap").classList.toggle("hidden", loc === "PAMB" || !loc);
+      $("setorPAWrap").classList.toggle("hidden", loc !== "PA");
+
+      if (loc === "PAMB" || !loc) {
+        $("proxyInicializar").value = "";
+      }
+
+      if (loc !== "PA") {
+        $("setorPA").value = "";
+        $("financeiroSoftwaresWrap").classList.add("hidden");
+        document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
+      }
+    });
+
+    $("setorPA").addEventListener("change", () => {
+      const setor = $("setorPA").value;
+      $("financeiroSoftwaresWrap").classList.toggle("hidden", setor !== "Financeiro");
+
+      if (setor !== "Financeiro") {
+        document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
+      }
     });
 
     function getSupabase() {
@@ -364,14 +456,30 @@
       const memoriaBase = $("memoriaRam").value;
       const memoriaFinal = memoriaBase === "Outro" ? $("memoriaRamOutro").value.trim() : memoriaBase;
 
+      const softwaresFinanceiro = Array.from(
+        document.querySelectorAll(".financeiroSoftware:checked")
+      ).map(cb => cb.value);
+
       return {
         numero_chamado: $("numeroChamado").value.trim(),
         patrimonio: $("patrimonio").value.trim().toUpperCase(),
+        marca_computador: $("marcaComputador").value,
+        tipo_instalacao: $("tipoInstalacao").value,
+        office_ativado: $("officeAtivado").value,
         ip: $("ip").value.trim(),
         localidade: $("localidade").value,
+        proxy_inicializar: $("localidade").value && $("localidade").value !== "PAMB"
+          ? $("proxyInicializar").value
+          : "",
+        setor_pa: $("localidade").value === "PA" ? $("setorPA").value : "",
+        softwares_financeiro: $("localidade").value === "PA" && $("setorPA").value === "Financeiro"
+          ? softwaresFinanceiro.join(", ")
+          : "",
         memoria_ram: memoriaFinal,
         armazenamento_tipo: $("armazenamentoTipo").value,
-        armazenamento_outros: $("armazenamentoTipo").value === "SSD Outros" ? $("armazenamentoOutros").value.trim() : "",
+        armazenamento_outros: $("armazenamentoTipo").value === "SSD Outros"
+          ? $("armazenamentoOutros").value.trim()
+          : "",
         problema: $("problema").value.trim(),
         resolucao: $("resolucao").value.trim(),
         tecnico_id: APP.profile.id,
@@ -380,12 +488,46 @@
     }
 
     function validatePayload(p) {
-      if (!p.numero_chamado || !p.patrimonio || !p.ip || !p.localidade || !p.memoria_ram || !p.armazenamento_tipo || !p.problema || !p.resolucao) {
+      if (
+        !p.numero_chamado ||
+        !p.patrimonio ||
+        !p.marca_computador ||
+        !p.tipo_instalacao ||
+        !p.office_ativado ||
+        !p.ip ||
+        !p.localidade ||
+        !p.memoria_ram ||
+        !p.armazenamento_tipo ||
+        !p.problema ||
+        !p.resolucao
+      ) {
         throw new Error("Preencha todos os campos obrigatórios.");
       }
 
       if (p.armazenamento_tipo === "SSD Outros" && !p.armazenamento_outros) {
         throw new Error("Informe a marca/modelo do SSD.");
+      }
+
+      if (p.office_ativado !== "Sim") {
+        throw new Error("É necessário marcar 'Sim' em Office ativado para prosseguir.");
+      }
+
+      if (p.localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
+        throw new Error("É necessário confirmar 'Sim' em retirou o proxy do Inicializar para prosseguir.");
+      }
+
+      if (p.localidade === "PA" && !p.setor_pa) {
+        throw new Error("Selecione o setor do PA.");
+      }
+
+      if (p.localidade === "PA" && p.setor_pa === "Financeiro") {
+        const qtd = p.softwares_financeiro
+          ? p.softwares_financeiro.split(",").map(s => s.trim()).filter(Boolean).length
+          : 0;
+
+        if (qtd < 2) {
+          throw new Error("No setor Financeiro é necessário marcar no mínimo 2 softwares.");
+        }
       }
     }
 
@@ -394,16 +536,27 @@
       $("formTitle").textContent = "Novo chamado";
       $("numeroChamado").value = "";
       $("patrimonio").value = "";
+      $("marcaComputador").value = "";
+      $("tipoInstalacao").value = "";
+      $("officeAtivado").value = "";
       $("ip").value = "";
       $("localidade").value = "";
+      $("proxyInicializar").value = "";
+      $("setorPA").value = "";
       $("memoriaRam").value = "";
       $("memoriaRamOutro").value = "";
       $("armazenamentoTipo").value = "";
       $("armazenamentoOutros").value = "";
       $("problema").value = "";
       $("resolucao").value = "";
+
+      document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
+
       $("ramOutroWrap").classList.add("hidden");
       $("outroStorageWrap").classList.add("hidden");
+      $("proxyWrap").classList.add("hidden");
+      $("setorPAWrap").classList.add("hidden");
+      $("financeiroSoftwaresWrap").classList.add("hidden");
       $("btnCancelarEdicao").classList.add("hidden");
       setMsg(formMsg, "");
     }
@@ -433,8 +586,14 @@
           const labels = {
             numero_chamado: "Número do chamado",
             patrimonio: "Patrimônio",
+            marca_computador: "Marca do computador",
+            tipo_instalacao: "Tipo de instalação",
+            office_ativado: "Office ativado",
             ip: "IP",
             localidade: "Localidade",
+            proxy_inicializar: "Proxy Inicializar",
+            setor_pa: "Setor PA",
+            softwares_financeiro: "Softwares Financeiro",
             memoria_ram: "Memória RAM",
             armazenamento_tipo: "Armazenamento",
             armazenamento_outros: "Detalhe armazenamento",
@@ -527,7 +686,7 @@
         return;
       }
 
-      let html = "<h4>Chamados</h4><table><tr><th>Chamado</th><th>Patrimônio</th><th>IP</th><th>Localidade</th><th>Técnico</th><th>RAM</th><th>Armazenamento</th><th>Ações</th></tr>";
+      let html = "<h4>Chamados</h4><table><tr><th>Chamado</th><th>Patrimônio</th><th>Marca</th><th>Instalação</th><th>Office</th><th>Proxy</th><th>Setor PA</th><th>Softwares</th><th>IP</th><th>Localidade</th><th>Técnico</th><th>RAM</th><th>Armazenamento</th><th>Ações</th></tr>";
 
       items.forEach(item => {
         const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
@@ -537,6 +696,12 @@
         html += `<tr>
           <td>${item.numero_chamado}</td>
           <td>${item.patrimonio}</td>
+          <td>${item.marca_computador || "-"}</td>
+          <td>${item.tipo_instalacao || "-"}</td>
+          <td>${item.office_ativado || "-"}</td>
+          <td>${item.proxy_inicializar || "-"}</td>
+          <td>${item.setor_pa || "-"}</td>
+          <td>${item.softwares_financeiro || "-"}</td>
           <td>${item.ip || "-"}</td>
           <td>${item.localidade || "-"}</td>
           <td>${item.tecnico_nome || "-"}</td>
@@ -579,8 +744,21 @@
       $("formTitle").textContent = "Editar chamado";
       $("numeroChamado").value = item.numero_chamado || "";
       $("patrimonio").value = item.patrimonio || "";
+      $("marcaComputador").value = item.marca_computador || "";
+      $("tipoInstalacao").value = item.tipo_instalacao || "";
+      $("officeAtivado").value = item.office_ativado || "";
       $("ip").value = item.ip || "";
       $("localidade").value = item.localidade || "";
+      $("proxyInicializar").value = item.proxy_inicializar || "";
+      $("setorPA").value = item.setor_pa || "";
+
+      $("proxyWrap").classList.toggle("hidden", !item.localidade || item.localidade === "PAMB");
+      $("setorPAWrap").classList.toggle("hidden", item.localidade !== "PA");
+      $("financeiroSoftwaresWrap").classList.toggle("hidden", item.setor_pa !== "Financeiro");
+
+      document.querySelectorAll(".financeiroSoftware").forEach(cb => {
+        cb.checked = (item.softwares_financeiro || "").split(",").map(s => s.trim()).includes(cb.value);
+      });
 
       if (RAM_OPTIONS.includes(item.memoria_ram)) {
         $("memoriaRam").value = item.memoria_ram;
@@ -605,8 +783,10 @@
 
     async function exportarCSV() {
       try {
-        const month = $("mesRef").value;
-        if (!month) throw new Error("Selecione o mês.");
+        const month = $("mesRef").value.trim();
+        if (!month || !/^\d{4}-\d{2}$/.test(month)) {
+          throw new Error("Digite o mês no formato AAAA-MM. Ex.: 2026-03");
+        }
 
         const startDate = new Date(month + "-01T00:00:00");
         const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
@@ -622,8 +802,22 @@
         if (error) throw error;
 
         const rows = [[
-          "Data", "Número do chamado", "Patrimônio", "IP", "Localidade", "Técnico",
-          "Memória RAM", "Armazenamento", "Problema", "Resolução"
+          "Data",
+          "Número do chamado",
+          "Patrimônio",
+          "Marca",
+          "Tipo de instalação",
+          "Office ativado",
+          "Proxy removido do Inicializar",
+          "Setor PA",
+          "Softwares Financeiro",
+          "IP",
+          "Localidade",
+          "Técnico",
+          "Memória RAM",
+          "Armazenamento",
+          "Problema",
+          "Resolução"
         ]];
 
         (data || []).forEach(item => {
@@ -635,6 +829,12 @@
             new Date(item.created_at).toLocaleString("pt-BR"),
             item.numero_chamado,
             item.patrimonio,
+            item.marca_computador || "",
+            item.tipo_instalacao || "",
+            item.office_ativado || "",
+            item.proxy_inicializar || "",
+            item.setor_pa || "",
+            item.softwares_financeiro || "",
             item.ip || "",
             item.localidade || "",
             item.tecnico_nome || "",
