@@ -4,60 +4,412 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Oficina MW Microware</title>
-  <link rel="icon" type="image/png" href="https://scontent-gru2-2.xx.fbcdn.net/v/t39.30808-6/301917572_405383498392094_885976783631893791_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=1d70fc&_nc_eui2=AeFbaLIf84pP30TLBms86MZcXzdiRIMY0oVfN2JEgxjShQBKtI-BLeaQv8quyi23qRd-LzMNRPHvpHpew6j_7hnc&_nc_ohc=l-WtdjhrJdkQ7kNvwGjv1oF&_nc_oc=AdkZrLzuNLEWkwPavtBRN6PZXp3gFEQygoUrSNnJiI5Bft1eantcIJRGMGzghb9SR7E&_nc_zt=23&_nc_ht=scontent-gru2-2.xx&_nc_gid=k9iBvwdfe4agJftDA7BsVQ&_nc_ss=8&oh=00_Afxc4f3E7wb_UzBt9GXStuAqInMPmpcC5ZYaxVV3ZqElvQ&oe=69B80C56">
+  <link rel="icon" type="image/png" href="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg:#f3f4f6; --card:#fff; --text:#111827; --muted:#6b7280;
-      --primary:#000000; --primary-dark:#333333; --border:#e5e7eb;
+      --bg:#f3f4f6;
+      --card:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --primary:#000000;
+      --primary-dark:#2b2b2b;
+      --border:#e5e7eb;
+      --soft:#f9fafb;
+      --success-bg:#dcfce7;
+      --success-text:#166534;
+      --warning-bg:#fef3c7;
+      --warning-text:#92400e;
+      --info-bg:#dbeafe;
+      --info-text:#1d4ed8;
+      --danger-bg:#fee2e2;
+      --danger-text:#991b1b;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
     }
-    * { box-sizing: border-box; }
-    body { margin:0; font-family: Arial, sans-serif; background:var(--bg); color:var(--text); }
-    .container { max-width: 1100px; margin: 0 auto; padding: 16px; }
-    .card { background:var(--card); border-radius:16px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,.08); margin-bottom:16px; }
-    h1,h2,h3,p { margin:0 0 10px; }
+
+    body.dark {
+      --bg:#0b1220;
+      --card:#111827;
+      --text:#f3f4f6;
+      --muted:#9ca3af;
+      --primary:#f3f4f6;
+      --primary-dark:#d1d5db;
+      --border:#243042;
+      --soft:#0f172a;
+      --success-bg:#052e16;
+      --success-text:#86efac;
+      --warning-bg:#3f2a05;
+      --warning-text:#fcd34d;
+      --info-bg:#172554;
+      --info-text:#93c5fd;
+      --danger-bg:#450a0a;
+      --danger-text:#fca5a5;
+      --shadow:0 8px 28px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family:Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      transition:.2s;
+    }
+
+    .container {
+      max-width:1200px;
+      margin:0 auto;
+      padding:16px;
+    }
+
+    .card {
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+
+    h1,h2,h3,h4,p { margin:0 0 10px; }
     .muted { color:var(--muted); font-size:14px; }
-    .grid-2 { display:grid; grid-template-columns:1fr; gap:12px; }
-    @media (min-width: 720px) { .grid-2 { grid-template-columns:1fr 1fr; } }
-    label { display:block; margin-bottom:6px; font-weight:700; font-size:14px; }
-    input, select, textarea, button {
-      width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:10px; font-size:15px;
-    }
-    textarea { min-height:100px; resize:vertical; }
-    button { background:var(--primary); color:#fff; border:none; font-weight:700; cursor:pointer; }
-    button:hover { background:var(--primary-dark); }
-    button.ghost { background:#e5e7eb; color:#111827; }
-    .row { display:flex; gap:10px; flex-wrap:wrap; }
-    .row > * { flex:1; min-width:160px; }
-    .hidden { display:none !important; }
-    .tag { display:inline-block; padding:6px 10px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-size:12px; font-weight:700; }
-    table { width:100%; border-collapse:collapse; font-size:14px; }
-    th, td { border-bottom:1px solid var(--border); padding:10px 8px; text-align:left; vertical-align:top; }
     .small { font-size:12px; }
-    .ok { color:#065f46; }
-    .err { color:#b91c1c; }
-    .topbar { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:16px; }
-    .logo { max-width:280px; height:auto; }
+
+    .grid-2, .grid-3, .grid-4 {
+      display:grid;
+      gap:12px;
+    }
+
+    .grid-2 { grid-template-columns:1fr; }
+    .grid-3 { grid-template-columns:1fr; }
+    .grid-4 { grid-template-columns:1fr; }
+
+    @media (min-width: 760px) {
+      .grid-2 { grid-template-columns:1fr 1fr; }
+      .grid-3 { grid-template-columns:repeat(3, 1fr); }
+      .grid-4 { grid-template-columns:repeat(4, 1fr); }
+    }
+
+    label {
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    input, select, textarea, button {
+      width:100%;
+      padding:11px 12px;
+      border:1px solid var(--border);
+      border-radius:12px;
+      font-size:15px;
+      background:var(--card);
+      color:var(--text);
+    }
+
+    textarea {
+      min-height:100px;
+      resize:vertical;
+    }
+
+    button {
+      background:var(--primary);
+      color:var(--bg);
+      border:none;
+      font-weight:700;
+      cursor:pointer;
+      transition:.15s;
+    }
+
+    button:hover {
+      background:var(--primary-dark);
+    }
+
+    button.ghost {
+      background:var(--soft);
+      color:var(--text);
+      border:1px solid var(--border);
+    }
+
+    button.ghost:hover {
+      filter:brightness(.98);
+    }
+
+    .row {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .row > * {
+      flex:1;
+      min-width:160px;
+    }
+
+    .hidden { display:none !important; }
+
+    .logo {
+      max-width:260px;
+      height:auto;
+      margin-bottom:6px;
+    }
+
+    .topbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .topbar-actions {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .tag, .badge {
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:700;
+      border:1px solid transparent;
+    }
+
+    .tag {
+      background:var(--soft);
+      color:var(--text);
+      border-color:var(--border);
+    }
+
+    .badge.success { background:var(--success-bg); color:var(--success-text); }
+    .badge.warning { background:var(--warning-bg); color:var(--warning-text); }
+    .badge.info { background:var(--info-bg); color:var(--info-text); }
+    .badge.danger { background:var(--danger-bg); color:var(--danger-text); }
+
+    .metric {
+      background:linear-gradient(180deg, var(--card), var(--soft));
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+    }
+
+    .metric .label {
+      font-size:13px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+
+    .metric .value {
+      font-size:28px;
+      font-weight:800;
+    }
+
+    .metric .sub {
+      font-size:12px;
+      color:var(--muted);
+      margin-top:6px;
+    }
+
     .checkbox-group {
       display:flex;
-      gap:20px;
+      gap:18px;
       flex-wrap:wrap;
       margin-top:8px;
     }
+
     .checkbox-group label {
       display:flex;
       align-items:center;
       gap:8px;
       font-weight:400;
-      margin-bottom:0;
+      margin:0;
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:10px 12px;
     }
+
     .checkbox-group input {
       width:auto;
       margin:0;
     }
+
+    .checklist {
+      display:grid;
+      gap:10px;
+      margin-top:8px;
+    }
+
+    .check-item {
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background:var(--soft);
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      font-size:14px;
+    }
+
+    .cards-results {
+      display:grid;
+      grid-template-columns:1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+
+    @media (min-width: 900px) {
+      .cards-results { grid-template-columns:repeat(2, 1fr); }
+    }
+
+    .result-card {
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:14px;
+      background:var(--card);
+    }
+
+    .result-card h4 {
+      margin-bottom:8px;
+    }
+
+    .result-card .meta {
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-bottom:10px;
+    }
+
+    .result-card .actions {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .table-wrap {
+      overflow:auto;
+    }
+
+    table {
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+
+    th, td {
+      border-bottom:1px solid var(--border);
+      padding:10px 8px;
+      text-align:left;
+      vertical-align:top;
+      white-space:nowrap;
+    }
+
+    tr:nth-child(even) td {
+      background:rgba(127,127,127,.03);
+    }
+
+    .toast-wrap {
+      position:fixed;
+      top:16px;
+      right:16px;
+      z-index:9999;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+
+    .toast {
+      min-width:280px;
+      max-width:360px;
+      padding:14px 16px;
+      border-radius:14px;
+      color:#fff;
+      box-shadow:var(--shadow);
+      animation:fadeIn .2s ease;
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .toast.success { background:#166534; }
+    .toast.error { background:#991b1b; }
+    .toast.info { background:#1d4ed8; }
+
+    @keyframes fadeIn {
+      from { opacity:0; transform:translateY(-8px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+
+    .modal-backdrop {
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:9998;
+      padding:16px;
+    }
+
+    .modal {
+      width:min(900px, 100%);
+      max-height:90vh;
+      overflow:auto;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:20px;
+      padding:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .modal-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .section-title {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+      flex-wrap:wrap;
+    }
+
+    .empty {
+      border:1px dashed var(--border);
+      border-radius:14px;
+      padding:16px;
+      color:var(--muted);
+      text-align:center;
+      background:var(--soft);
+    }
   </style>
 </head>
 <body>
+  <div class="toast-wrap" id="toastWrap"></div>
+
+  <div id="detailsModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <div>
+          <h3>Detalhes do chamado</h3>
+          <p class="muted">Visualização completa do registro.</p>
+        </div>
+        <button class="ghost" id="btnCloseDetails" style="width:auto;">Fechar</button>
+      </div>
+      <div id="detailsContent"></div>
+    </div>
+  </div>
+
   <div class="container">
     <div id="authView" class="card">
         <img
@@ -114,8 +466,39 @@
     <div id="appView" class="hidden">
       <div class="topbar">
         <div>
+          <h2>Painel da Oficina</h2>
+          <p class="muted">Dashboard, cadastro, filtros, consulta e exportação.</p>
+        </div>
+        <div class="topbar-actions">
           <span id="userInfo" class="tag"></span>
-          <button id="btnLogout" class="ghost" style="margin-top:8px;">Sair</button>
+          <button class="ghost" id="btnToggleTheme" style="width:auto;">Tema escuro</button>
+          <button id="btnLogout" class="ghost" style="width:auto;">Sair</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-title">
+          <div>
+            <h3>Dashboard</h3>
+            <p class="muted">Visão geral do mês e recorrência de máquinas/localidades.</p>
+          </div>
+          <div class="row" style="min-width:280px;">
+            <input id="dashboardMonth" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
+            <button id="btnRefreshDashboard">Atualizar dashboard</button>
+          </div>
+        </div>
+
+        <div class="grid-4" id="dashboardCards"></div>
+
+        <div class="grid-2" style="margin-top:12px;">
+          <div class="card" style="margin-bottom:0;">
+            <h4>Patrimônios com mais chamados</h4>
+            <div class="table-wrap" id="dashboardPatrimonio"></div>
+          </div>
+          <div class="card" style="margin-bottom:0;">
+            <h4>Chamados por localidade</h4>
+            <div class="table-wrap" id="dashboardLocalidade"></div>
+          </div>
         </div>
       </div>
 
@@ -213,6 +596,11 @@
             <label>Resolução</label>
             <textarea id="resolucao" placeholder="Descreva a resolução"></textarea>
           </div>
+
+          <div style="grid-column:1/-1;">
+            <label>Checklist visual</label>
+            <div class="checklist" id="checklistBox"></div>
+          </div>
         </div>
 
         <div class="row" style="margin-top:12px;">
@@ -224,13 +612,48 @@
       </div>
 
       <div class="card">
-        <h3>Consulta por patrimônio</h3>
-        <div class="row">
-          <input id="buscaPatrimonio" placeholder="Digite o patrimônio" />
-          <button id="btnBuscar">Buscar</button>
+        <h3>Filtros e consulta</h3>
+        <div class="grid-3">
+          <div>
+            <label>Patrimônio</label>
+            <input id="buscaPatrimonio" placeholder="Digite o patrimônio" />
+          </div>
+          <div>
+            <label>Localidade</label>
+            <select id="filtroLocalidade"></select>
+          </div>
+          <div>
+            <label>Técnico</label>
+            <input id="filtroTecnico" placeholder="Nome do técnico" />
+          </div>
+          <div>
+            <label>Marca</label>
+            <select id="filtroMarca"></select>
+          </div>
+          <div>
+            <label>Tipo de instalação</label>
+            <select id="filtroInstalacao"></select>
+          </div>
+          <div>
+            <label>Mês</label>
+            <input id="filtroMes" type="text" placeholder="AAAA-MM (opcional)" />
+          </div>
         </div>
-        <div id="resultadoChamados" style="overflow:auto; margin-top:12px;"></div>
-        <div id="resultadoHistorico" style="overflow:auto; margin-top:12px;"></div>
+
+        <div class="row" style="margin-top:12px;">
+          <button id="btnBuscar">Buscar</button>
+          <button id="btnLimparFiltros" class="ghost">Limpar filtros</button>
+        </div>
+
+        <div class="cards-results" id="resultadoCards"></div>
+
+        <div style="overflow:auto; margin-top:14px;">
+          <div id="resultadoChamados"></div>
+        </div>
+
+        <div style="overflow:auto; margin-top:14px;">
+          <div id="resultadoHistorico"></div>
+        </div>
       </div>
 
       <div class="card">
@@ -239,7 +662,7 @@
           <input id="mesRef" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
           <button id="btnExportar">Exportar CSV para Excel</button>
         </div>
-        <p class="muted small">A exportação inclui técnico, IP, localidade, proxy, setor e softwares.</p>
+        <p class="muted small">A exportação inclui todos os campos do chamado.</p>
       </div>
     </div>
   </div>
@@ -258,12 +681,23 @@
       profile: null,
       editingId: null,
       lastCalls: [],
-      supabase: null
+      supabase: null,
+      currentFilteredCalls: [],
+      allCallsForDashboard: []
     };
 
     const $ = (id) => document.getElementById(id);
 
-    function fillSelect(selectId, options, placeholder = "Selecione") {
+    function showToast(message, type = "info") {
+      const wrap = $("toastWrap");
+      const div = document.createElement("div");
+      div.className = `toast ${type}`;
+      div.textContent = message;
+      wrap.appendChild(div);
+      setTimeout(() => div.remove(), 3200);
+    }
+
+    function fillSelect(selectId, options, placeholder = "Todos") {
       const el = $(selectId);
       el.innerHTML = "";
       const first = document.createElement("option");
@@ -279,12 +713,16 @@
       });
     }
 
-    fillSelect("memoriaRam", RAM_OPTIONS);
-    fillSelect("armazenamentoTipo", STORAGE_OPTIONS);
-    fillSelect("localidade", LOCALIDADE_OPTIONS);
-    fillSelect("marcaComputador", MARCA_OPTIONS);
-    fillSelect("tipoInstalacao", INSTALACAO_OPTIONS);
-    fillSelect("setorPA", SETOR_PA_OPTIONS);
+    fillSelect("memoriaRam", RAM_OPTIONS, "Selecione");
+    fillSelect("armazenamentoTipo", STORAGE_OPTIONS, "Selecione");
+    fillSelect("localidade", LOCALIDADE_OPTIONS, "Selecione");
+    fillSelect("marcaComputador", MARCA_OPTIONS, "Selecione");
+    fillSelect("tipoInstalacao", INSTALACAO_OPTIONS, "Selecione");
+    fillSelect("setorPA", SETOR_PA_OPTIONS, "Selecione");
+
+    fillSelect("filtroLocalidade", LOCALIDADE_OPTIONS, "Todas");
+    fillSelect("filtroMarca", MARCA_OPTIONS, "Todas");
+    fillSelect("filtroInstalacao", INSTALACAO_OPTIONS, "Todos");
 
     const authMsg = $("authMsg");
     const formMsg = $("formMsg");
@@ -292,6 +730,17 @@
     function setMsg(el, msg, type = "muted") {
       el.className = "small " + type;
       el.textContent = msg;
+    }
+
+    function formatMonthInput(date = new Date()) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    $("dashboardMonth").value = formatMonthInput();
+    $("mesRef").value = formatMonthInput();
+
+    function badge(text, type = "info") {
+      return `<span class="badge ${type}">${text}</span>`;
     }
 
     function showLogin() {
@@ -313,12 +762,16 @@
 
     $("memoriaRam").addEventListener("change", () => {
       $("ramOutroWrap").classList.toggle("hidden", $("memoriaRam").value !== "Outro");
+      updateChecklist();
     });
 
     $("armazenamentoTipo").addEventListener("change", () => {
       $("outroStorageWrap").classList.toggle("hidden", $("armazenamentoTipo").value !== "SSD Outros");
+      updateChecklist();
     });
 
+    $("officeAtivado").addEventListener("change", updateChecklist);
+    $("proxyInicializar").addEventListener("change", updateChecklist);
     $("localidade").addEventListener("change", () => {
       const loc = $("localidade").value;
       $("proxyWrap").classList.toggle("hidden", loc === "PAMB" || !loc);
@@ -333,6 +786,8 @@
         $("financeiroSoftwaresWrap").classList.add("hidden");
         document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
       }
+
+      updateChecklist();
     });
 
     $("setorPA").addEventListener("change", () => {
@@ -342,6 +797,12 @@
       if (setor !== "Financeiro") {
         document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
       }
+
+      updateChecklist();
+    });
+
+    document.querySelectorAll(".financeiroSoftware").forEach(cb => {
+      cb.addEventListener("change", updateChecklist);
     });
 
     function getSupabase() {
@@ -354,14 +815,75 @@
       }
 
       if (!APP.supabase) {
-        APP.supabase = window.supabase.createClient(
-          window.SUPABASE_URL,
-          window.SUPABASE_ANON_KEY
-        );
+        APP.supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
       }
 
       return APP.supabase;
     }
+
+    function updateChecklist() {
+      const localidade = $("localidade").value;
+      const office = $("officeAtivado").value;
+      const proxy = $("proxyInicializar").value;
+      const setor = $("setorPA").value;
+      const softwares = Array.from(document.querySelectorAll(".financeiroSoftware:checked")).length;
+
+      const items = [];
+
+      items.push({
+        label: "Office ativado",
+        ok: office === "Sim",
+        text: office ? office : "Pendente"
+      });
+
+      if (localidade && localidade !== "PAMB") {
+        items.push({
+          label: "Proxy removido do Inicializar",
+          ok: proxy === "Sim",
+          text: proxy ? proxy : "Pendente"
+        });
+      }
+
+      if (localidade === "PA") {
+        items.push({
+          label: "Setor do PA",
+          ok: !!setor,
+          text: setor || "Pendente"
+        });
+
+        if (setor === "Financeiro") {
+          items.push({
+            label: "Softwares do Financeiro",
+            ok: softwares >= 2,
+            text: `${softwares} marcado(s)`
+          });
+        }
+      }
+
+      const html = items.length
+        ? items.map(item => `
+          <div class="check-item">
+            <span>${item.label}</span>
+            ${item.ok ? badge(item.text, "success") : badge(item.text, "warning")}
+          </div>
+        `).join("")
+        : `<div class="empty">O checklist aparecerá conforme você preencher o chamado.</div>`;
+
+      $("checklistBox").innerHTML = html;
+    }
+
+    function applyTheme(theme) {
+      document.body.classList.toggle("dark", theme === "dark");
+      $("btnToggleTheme").textContent = theme === "dark" ? "Tema claro" : "Tema escuro";
+      localStorage.setItem("oficina_theme", theme);
+    }
+
+    $("btnToggleTheme").onclick = () => {
+      const current = document.body.classList.contains("dark") ? "dark" : "light";
+      applyTheme(current === "dark" ? "light" : "dark");
+    };
+
+    applyTheme(localStorage.getItem("oficina_theme") || "light");
 
     async function register() {
       try {
@@ -385,19 +907,20 @@
         if (data.user) {
           const { error: profileError } = await supabase.from("tecnicos").upsert({
             id: data.user.id,
-            nome: nome,
-            email: email
+            nome,
+            email
           });
-
           if (profileError) throw profileError;
         }
 
         setMsg(authMsg, "Conta criada. Faça login para entrar.", "ok");
+        showToast("Conta criada com sucesso.", "success");
         $("loginEmail").value = email;
         showLogin();
       } catch (e) {
         console.error("Erro no registro:", e);
         setMsg(authMsg, e.message || "Erro ao registrar.", "err");
+        showToast(e.message || "Erro ao registrar.", "error");
       }
     }
 
@@ -413,9 +936,11 @@
         APP.sessionUser = data.user;
         await loadProfile();
         enterApp();
+        showToast("Login realizado com sucesso.", "success");
       } catch (e) {
         console.error("Erro no login:", e);
         setMsg(authMsg, e.message || "Erro ao entrar.", "err");
+        showToast(e.message || "Erro ao entrar.", "error");
       }
     }
 
@@ -431,10 +956,113 @@
       APP.profile = data;
     }
 
+    async function loadDashboard(month) {
+      try {
+        const supabase = getSupabase();
+
+        let query = supabase.from("chamados").select("*").order("created_at", { ascending: false });
+
+        if (month && /^\d{4}-\d{2}$/.test(month)) {
+          const startDate = new Date(month + "-01T00:00:00");
+          const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+          query = query.gte("created_at", startDate.toISOString()).lt("created_at", endDate.toISOString());
+        }
+
+        const { data, error } = await query;
+        if (error) throw error;
+
+        APP.allCallsForDashboard = data || [];
+        renderDashboard(APP.allCallsForDashboard, month);
+      } catch (e) {
+        console.error("Erro ao carregar dashboard:", e);
+        showToast("Erro ao carregar dashboard.", "error");
+      }
+    }
+
+    function renderDashboard(items, month) {
+      const total = items.length;
+      const clones = items.filter(i => i.tipo_instalacao === "Clone").length;
+      const limpas = items.filter(i => i.tipo_instalacao === "Instalação limpa").length;
+      const pams = items.filter(i => i.localidade === "PAMB").length;
+
+      $("dashboardCards").innerHTML = `
+        <div class="metric">
+          <div class="label">Chamados no período</div>
+          <div class="value">${total}</div>
+          <div class="sub">${month || "Todos os meses"}</div>
+        </div>
+        <div class="metric">
+          <div class="label">Instalação limpa</div>
+          <div class="value">${limpas}</div>
+          <div class="sub">Total de instalações limpas</div>
+        </div>
+        <div class="metric">
+          <div class="label">Clone</div>
+          <div class="value">${clones}</div>
+          <div class="sub">Total de clonagens</div>
+        </div>
+        <div class="metric">
+          <div class="label">Localidade PAMB</div>
+          <div class="value">${pams}</div>
+          <div class="sub">Chamados no PAMB</div>
+        </div>
+      `;
+
+      const patrimonioMap = {};
+      items.forEach(item => {
+        const key = item.patrimonio || "Sem patrimônio";
+        if (!patrimonioMap[key]) {
+          patrimonioMap[key] = { patrimonio: key, localidade: item.localidade || "-", total: 0 };
+        }
+        patrimonioMap[key].total += 1;
+      });
+
+      const topPatrimonios = Object.values(patrimonioMap)
+        .sort((a, b) => b.total - a.total)
+        .slice(0, 10);
+
+      $("dashboardPatrimonio").innerHTML = topPatrimonios.length
+        ? `<table>
+            <tr><th>Patrimônio</th><th>Localidade</th><th>Qtd.</th></tr>
+            ${topPatrimonios.map(i => `
+              <tr>
+                <td>${i.patrimonio}</td>
+                <td>${i.localidade}</td>
+                <td>${i.total}</td>
+              </tr>
+            `).join("")}
+          </table>`
+        : `<div class="empty">Sem dados para o período.</div>`;
+
+      const localidadeMap = {};
+      items.forEach(item => {
+        const key = item.localidade || "Sem localidade";
+        if (!localidadeMap[key]) localidadeMap[key] = 0;
+        localidadeMap[key] += 1;
+      });
+
+      const topLocalidades = Object.entries(localidadeMap)
+        .map(([localidade, total]) => ({ localidade, total }))
+        .sort((a, b) => b.total - a.total);
+
+      $("dashboardLocalidade").innerHTML = topLocalidades.length
+        ? `<table>
+            <tr><th>Localidade</th><th>Qtd.</th></tr>
+            ${topLocalidades.map(i => `
+              <tr>
+                <td>${i.localidade}</td>
+                <td>${i.total}</td>
+              </tr>
+            `).join("")}
+          </table>`
+        : `<div class="empty">Sem dados para o período.</div>`;
+    }
+
     function enterApp() {
       $("authView").classList.add("hidden");
       $("appView").classList.remove("hidden");
       $("userInfo").textContent = `${APP.profile.nome} • ${APP.profile.email}`;
+      loadDashboard($("dashboardMonth").value.trim());
     }
 
     async function restoreSession() {
@@ -509,11 +1137,11 @@
       }
 
       if (p.office_ativado !== "Sim") {
-        throw new Error("É necessário ativar o Office para prosseguir.");
+        throw new Error("É necessário Office ativado para prosseguir.");
       }
 
       if (p.localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
-        throw new Error("É necessário retirar o proxy do Inicializar para máquinas do PA.");
+        throw new Error("É necessário retirar o proxy em máquinas do PA para prosseguir.");
       }
 
       if (p.localidade === "PA" && !p.setor_pa) {
@@ -549,9 +1177,7 @@
       $("armazenamentoOutros").value = "";
       $("problema").value = "";
       $("resolucao").value = "";
-
       document.querySelectorAll(".financeiroSoftware").forEach(cb => cb.checked = false);
-
       $("ramOutroWrap").classList.add("hidden");
       $("outroStorageWrap").classList.add("hidden");
       $("proxyWrap").classList.add("hidden");
@@ -559,6 +1185,7 @@
       $("financeiroSoftwaresWrap").classList.add("hidden");
       $("btnCancelarEdicao").classList.add("hidden");
       setMsg(formMsg, "");
+      updateChecklist();
     }
 
     async function saveCall() {
@@ -617,6 +1244,7 @@
 
           if (auditError) throw auditError;
           setMsg(formMsg, "Chamado atualizado com sucesso.", "ok");
+          showToast("Chamado atualizado com sucesso.", "success");
         } else {
           const { data, error } = await supabase
             .from("chamados")
@@ -637,56 +1265,131 @@
 
           if (auditError) throw auditError;
           setMsg(formMsg, "Chamado salvo com sucesso.", "ok");
+          showToast("Chamado salvo com sucesso.", "success");
         }
 
         resetForm();
-        if ($("buscaPatrimonio").value.trim()) buscar();
+        await buscar();
+        await loadDashboard($("dashboardMonth").value.trim());
       } catch (e) {
         console.error("Erro ao salvar chamado:", e);
         setMsg(formMsg, e.message || "Erro ao salvar.", "err");
+        showToast(e.message || "Erro ao salvar.", "error");
       }
+    }
+
+    function buildFiltersQuery(query) {
+      const patrimonio = $("buscaPatrimonio").value.trim().toUpperCase();
+      const localidade = $("filtroLocalidade").value;
+      const tecnico = $("filtroTecnico").value.trim();
+      const marca = $("filtroMarca").value;
+      const instalacao = $("filtroInstalacao").value;
+      const mes = $("filtroMes").value.trim();
+
+      if (patrimonio) query = query.ilike("patrimonio", `%${patrimonio}%`);
+      if (localidade) query = query.eq("localidade", localidade);
+      if (tecnico) query = query.ilike("tecnico_nome", `%${tecnico}%`);
+      if (marca) query = query.eq("marca_computador", marca);
+      if (instalacao) query = query.eq("tipo_instalacao", instalacao);
+
+      if (mes && /^\d{4}-\d{2}$/.test(mes)) {
+        const startDate = new Date(mes + "-01T00:00:00");
+        const endDate = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 1);
+        query = query.gte("created_at", startDate.toISOString()).lt("created_at", endDate.toISOString());
+      }
+
+      return query;
     }
 
     async function buscar() {
       try {
-        const patrimonio = $("buscaPatrimonio").value.trim().toUpperCase();
-        if (!patrimonio) return;
-
         const supabase = getSupabase();
-        const { data: chamados, error } = await supabase
-          .from("chamados")
-          .select("*")
-          .ilike("patrimonio", `%${patrimonio}%`)
-          .order("created_at", { ascending: false });
 
+        let chamadosQuery = supabase.from("chamados").select("*").order("created_at", { ascending: false });
+        chamadosQuery = buildFiltersQuery(chamadosQuery);
+
+        const { data: chamados, error } = await chamadosQuery;
         if (error) throw error;
 
-        const { data: historico, error: histError } = await supabase
-          .from("historico_alteracoes")
-          .select("*")
-          .ilike("patrimonio", `%${patrimonio}%`)
-          .order("created_at", { ascending: false });
+        let historicoQuery = supabase.from("historico_alteracoes").select("*").order("created_at", { ascending: false });
+        const patrimonio = $("buscaPatrimonio").value.trim().toUpperCase();
+        if (patrimonio) historicoQuery = historicoQuery.ilike("patrimonio", `%${patrimonio}%`);
 
+        const { data: historico, error: histError } = await historicoQuery;
         if (histError) throw histError;
 
-        renderChamados(chamados || []);
+        APP.currentFilteredCalls = chamados || [];
+        renderChamados(APP.currentFilteredCalls);
+        renderCards(APP.currentFilteredCalls);
         renderHistorico(historico || []);
       } catch (e) {
         console.error("Erro na busca:", e);
         $("resultadoChamados").innerHTML = `<p class="err small">${e.message || "Erro na busca."}</p>`;
         $("resultadoHistorico").innerHTML = "";
+        $("resultadoCards").innerHTML = "";
+        showToast("Erro na busca.", "error");
       }
+    }
+
+    function renderCards(items) {
+      if (!items.length) {
+        $("resultadoCards").innerHTML = `<div class="empty">Nenhum chamado encontrado com os filtros atuais.</div>`;
+        return;
+      }
+
+      $("resultadoCards").innerHTML = items.map(item => {
+        const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
+          ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
+          : item.armazenamento_tipo;
+
+        return `
+          <div class="result-card">
+            <h4>${item.numero_chamado}</h4>
+            <div class="meta">
+              ${badge(item.patrimonio, "info")}
+              ${badge(item.localidade || "-", "warning")}
+              ${badge(item.tecnico_nome || "-", "success")}
+              ${badge(item.tipo_instalacao || "-", "info")}
+            </div>
+            <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
+            <p><strong>IP:</strong> ${item.ip || "-"}</p>
+            <p><strong>Office:</strong> ${item.office_ativado || "-"}</p>
+            <p><strong>Armazenamento:</strong> ${storage}</p>
+            <p><strong>Problema:</strong> ${item.problema || "-"}</p>
+            <div class="actions">
+              <button onclick="verDetalhes('${item.id}')" style="width:auto;">Ver detalhes</button>
+              <button class="ghost" onclick="editarChamado('${item.id}')" style="width:auto;">Editar</button>
+            </div>
+          </div>
+        `;
+      }).join("");
     }
 
     function renderChamados(items) {
       APP.lastCalls = items;
 
       if (!items.length) {
-        $("resultadoChamados").innerHTML = "<p class='muted'>Nenhum chamado encontrado.</p>";
+        $("resultadoChamados").innerHTML = "<div class='empty'>Nenhum chamado encontrado.</div>";
         return;
       }
 
-      let html = "<h4>Chamados</h4><table><tr><th>Chamado</th><th>Patrimônio</th><th>Marca</th><th>Instalação</th><th>Office</th><th>Proxy</th><th>Setor PA</th><th>Softwares</th><th>IP</th><th>Localidade</th><th>Técnico</th><th>RAM</th><th>Armazenamento</th><th>Ações</th></tr>";
+      let html = `<h4>Lista detalhada</h4><div class="table-wrap"><table>
+        <tr>
+          <th>Chamado</th>
+          <th>Patrimônio</th>
+          <th>Marca</th>
+          <th>Instalação</th>
+          <th>Office</th>
+          <th>Proxy</th>
+          <th>Setor PA</th>
+          <th>Softwares</th>
+          <th>IP</th>
+          <th>Localidade</th>
+          <th>Técnico</th>
+          <th>RAM</th>
+          <th>Armazenamento</th>
+          <th>Ações</th>
+        </tr>`;
 
       items.forEach(item => {
         const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
@@ -707,21 +1410,27 @@
           <td>${item.tecnico_nome || "-"}</td>
           <td>${item.memoria_ram}</td>
           <td>${storage}</td>
-          <td><button onclick="editarChamado('${item.id}')" style="padding:8px 10px;">Editar</button></td>
+          <td>
+            <div class="row" style="flex-wrap:nowrap;">
+              <button onclick="verDetalhes('${item.id}')" style="padding:8px 10px;">Ver</button>
+              <button class="ghost" onclick="editarChamado('${item.id}')" style="padding:8px 10px;">Editar</button>
+            </div>
+          </td>
         </tr>`;
       });
 
-      html += "</table>";
+      html += "</table></div>";
       $("resultadoChamados").innerHTML = html;
     }
 
     function renderHistorico(items) {
       if (!items.length) {
-        $("resultadoHistorico").innerHTML = "<p class='muted'>Nenhum histórico encontrado.</p>";
+        $("resultadoHistorico").innerHTML = "<div class='empty'>Nenhum histórico encontrado.</div>";
         return;
       }
 
-      let html = "<h4>Histórico de alterações</h4><table><tr><th>Data</th><th>Ação</th><th>Técnico</th><th>Resumo</th></tr>";
+      let html = `<h4>Histórico de alterações</h4><div class="table-wrap"><table>
+        <tr><th>Data</th><th>Ação</th><th>Técnico</th><th>Resumo</th></tr>`;
 
       items.forEach(item => {
         html += `<tr>
@@ -732,9 +1441,75 @@
         </tr>`;
       });
 
-      html += "</table>";
+      html += "</table></div>";
       $("resultadoHistorico").innerHTML = html;
     }
+
+    window.verDetalhes = function(id) {
+      const item = APP.lastCalls.find(x => x.id === id);
+      if (!item) return;
+
+      const storage = item.armazenamento_tipo === "SSD Outros" && item.armazenamento_outros
+        ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
+        : item.armazenamento_tipo;
+
+      $("detailsContent").innerHTML = `
+        <div class="grid-2">
+          <div class="card" style="margin-bottom:0;">
+            <h4>Identificação</h4>
+            <p><strong>Número do chamado:</strong> ${item.numero_chamado}</p>
+            <p><strong>Patrimônio:</strong> ${item.patrimonio}</p>
+            <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
+            <p><strong>IP:</strong> ${item.ip || "-"}</p>
+            <p><strong>Localidade:</strong> ${item.localidade || "-"}</p>
+            <p><strong>Técnico:</strong> ${item.tecnico_nome || "-"}</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Instalação</h4>
+            <p><strong>Tipo:</strong> ${item.tipo_instalacao || "-"}</p>
+            <p><strong>Office ativado:</strong> ${item.office_ativado || "-"}</p>
+            <p><strong>Proxy Inicializar:</strong> ${item.proxy_inicializar || "-"}</p>
+            <p><strong>Setor PA:</strong> ${item.setor_pa || "-"}</p>
+            <p><strong>Softwares Financeiro:</strong> ${item.softwares_financeiro || "-"}</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Hardware</h4>
+            <p><strong>Memória RAM:</strong> ${item.memoria_ram || "-"}</p>
+            <p><strong>Armazenamento:</strong> ${storage}</p>
+          </div>
+
+          <div class="card" style="margin-bottom:0;">
+            <h4>Datas</h4>
+            <p><strong>Criado em:</strong> ${item.created_at ? new Date(item.created_at).toLocaleString("pt-BR") : "-"}</p>
+            <p><strong>Atualizado em:</strong> ${item.updated_at ? new Date(item.updated_at).toLocaleString("pt-BR") : "-"}</p>
+          </div>
+
+          <div class="card" style="grid-column:1/-1; margin-bottom:0;">
+            <h4>Problema</h4>
+            <p>${(item.problema || "-").replace(/\n/g, "<br>")}</p>
+          </div>
+
+          <div class="card" style="grid-column:1/-1; margin-bottom:0;">
+            <h4>Resolução</h4>
+            <p>${(item.resolucao || "-").replace(/\n/g, "<br>")}</p>
+          </div>
+        </div>
+      `;
+
+      $("detailsModalBackdrop").classList.remove("hidden");
+    };
+
+    $("btnCloseDetails").onclick = () => {
+      $("detailsModalBackdrop").classList.add("hidden");
+    };
+
+    $("detailsModalBackdrop").addEventListener("click", (e) => {
+      if (e.target.id === "detailsModalBackdrop") {
+        $("detailsModalBackdrop").classList.add("hidden");
+      }
+    });
 
     window.editarChamado = function(id) {
       const item = APP.lastCalls.find(x => x.id === id);
@@ -776,6 +1551,7 @@
       $("problema").value = item.problema || "";
       $("resolucao").value = item.resolucao || "";
       $("btnCancelarEdicao").classList.remove("hidden");
+      updateChecklist();
       window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
@@ -851,6 +1627,7 @@
         a.href = URL.createObjectURL(blob);
         a.download = `relatorio_chamados_${month}.csv`;
         a.click();
+        showToast("Relatório exportado com sucesso.", "success");
       } catch (e) {
         console.error("Erro ao exportar CSV:", e);
         alert(e.message || "Erro ao exportar.");
@@ -873,7 +1650,19 @@
     $("btnBuscar").onclick = buscar;
     $("btnExportar").onclick = exportarCSV;
     $("btnLogout").onclick = logout;
+    $("btnRefreshDashboard").onclick = () => loadDashboard($("dashboardMonth").value.trim());
 
+    $("btnLimparFiltros").onclick = () => {
+      $("buscaPatrimonio").value = "";
+      $("filtroLocalidade").value = "";
+      $("filtroTecnico").value = "";
+      $("filtroMarca").value = "";
+      $("filtroInstalacao").value = "";
+      $("filtroMes").value = "";
+      buscar();
+    };
+
+    updateChecklist();
     restoreSession();
   </script>
 </body>
