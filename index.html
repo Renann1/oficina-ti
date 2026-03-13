@@ -57,7 +57,7 @@
     }
 
     .container {
-      max-width:1250px;
+      max-width:1260px;
       margin:0 auto;
       padding:16px;
     }
@@ -74,6 +74,8 @@
     h1,h2,h3,h4,p { margin:0 0 10px; }
     .muted { color:var(--muted); font-size:14px; }
     .small { font-size:12px; }
+    .err { color:#b91c1c; }
+    .ok { color:#166534; }
 
     .grid-2, .grid-3, .grid-4 {
       display:grid;
@@ -515,7 +517,7 @@
 
       <div id="adminPanel" class="card hidden">
         <h3>Administrador</h3>
-        <p class="muted">Gerencie listas dinâmicas do sistema.</p>
+        <p class="muted">Gerencie listas do sistema com mais organização.</p>
 
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
@@ -627,13 +629,13 @@
             <select id="grupoLocalidade"></select>
           </div>
 
-          <div>
+          <div id="localidadeEspecificaWrap">
             <label>Local específico</label>
             <select id="localidadeEspecifica"></select>
           </div>
 
           <div id="proxyWrap" class="hidden">
-            <label>Retirou o proxy do Inicializar?</label>
+            <label>Proxy removido do Inicializar?</label>
             <select id="proxyInicializar">
               <option value="">Selecione</option>
               <option value="Sim">Sim</option>
@@ -750,7 +752,7 @@
           <input id="mesRef" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
           <button id="btnExportar">Exportar CSV para Excel</button>
         </div>
-        <p class="muted small">A exportação inclui grupo e local específico.</p>
+        <p class="muted small">A exportação inclui grupo e local específico/setor.</p>
       </div>
     </div>
   </div>
@@ -930,6 +932,18 @@
 
     function updateLocalidadeEspecificaOptions(sourceGroupSelectId, targetSelectId, placeholder = "Selecione") {
       const grupoId = $(sourceGroupSelectId).value;
+      const grupoNome = APP.gruposLocalidade.find(g => g.id === grupoId)?.nome || "";
+      const el = $(targetSelectId);
+
+      if (grupoNome === "IGS") {
+        el.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "Não se aplica ao IGS";
+        el.appendChild(option);
+        return;
+      }
+
       const options = APP.locaisEspecificos.filter(x => !grupoId || x.grupo_id === grupoId);
       fillRecordSelect(targetSelectId, options, placeholder);
     }
@@ -1004,28 +1018,40 @@
 
     $("grupoLocalidade").addEventListener("change", async () => {
       updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
+
+      const grupo = getGrupoSelecionado()?.nome || "";
+      const isIGS = grupo === "IGS";
+
+      $("localidadeEspecificaWrap").classList.toggle("hidden", isIGS);
+      $("setorIGSWrap").classList.toggle("hidden", !isIGS);
+
       $("proxyInicializar").value = "";
-      $("setorIGS").value = "";
       $("softwaresSetorContainer").innerHTML = "";
       $("softwaresSetorWrap").classList.add("hidden");
 
-      const grupo = getGrupoSelecionado()?.nome || "";
-      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
+      if (!isIGS) {
+        $("setorIGS").value = "";
+      }
+
       $("proxyWrap").classList.add("hidden");
       updateChecklist();
     });
 
     $("localidadeEspecifica").addEventListener("change", async () => {
       const grupo = getGrupoSelecionado()?.nome || "";
-      const local = getLocalEspecificoSelecionado()?.nome || "";
+      const isIGS = grupo === "IGS";
+      const isPAMB = grupo === "PAMB";
 
-      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
-      $("proxyWrap").classList.toggle("hidden", !exigeProxy);
+      if (isIGS || isPAMB) {
+        $("proxyWrap").classList.add("hidden");
+        $("proxyInicializar").value = "";
+      } else if (grupo) {
+        $("proxyWrap").classList.remove("hidden");
+      } else {
+        $("proxyWrap").classList.add("hidden");
+      }
 
-      if (!exigeProxy) $("proxyInicializar").value = "";
-
-      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
-      if (grupo !== "IGS") {
+      if (!isIGS) {
         $("setorIGS").value = "";
         $("softwaresSetorContainer").innerHTML = "";
         $("softwaresSetorWrap").classList.add("hidden");
@@ -1050,7 +1076,6 @@
 
     function updateChecklist() {
       const grupo = getGrupoSelecionado()?.nome || "";
-      const local = getLocalEspecificoSelecionado()?.nome || "";
       const office = $("officeAtivado").value;
       const proxy = $("proxyInicializar").value;
       const setor = getSetorSelecionado()?.nome || "";
@@ -1066,8 +1091,7 @@
         text: office ? office : "Pendente"
       });
 
-      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
-      if (exigeProxy) {
+      if (grupo && grupo !== "PAMB" && grupo !== "IGS") {
         items.push({
           label: "Proxy removido do Inicializar",
           ok: proxy === "Sim",
@@ -1244,7 +1268,7 @@
         if (!patrimonioMap[key]) {
           patrimonioMap[key] = {
             patrimonio: key,
-            local: item.localidade || "-",
+            local: item.grupo_localidade === "IGS" ? (item.setor_pa || "-") : (item.localidade || "-"),
             grupo: item.grupo_localidade || "-",
             total: 0
           };
@@ -1256,7 +1280,7 @@
 
       $("dashboardPatrimonio").innerHTML = topPatrimonios.length
         ? `<table>
-            <tr><th>Patrimônio</th><th>Grupo</th><th>Local</th><th>Qtd.</th></tr>
+            <tr><th>Patrimônio</th><th>Grupo</th><th>Local/Setor</th><th>Qtd.</th></tr>
             ${topPatrimonios.map(i => `
               <tr>
                 <td>${i.patrimonio}</td>
@@ -1270,11 +1294,12 @@
 
       const localidadeMap = {};
       items.forEach(item => {
-        const key = `${item.grupo_localidade || "Sem grupo"} | ${item.localidade || "Sem local"}`;
+        const labelLocal = item.grupo_localidade === "IGS" ? (item.setor_pa || "Sem setor") : (item.localidade || "Sem local");
+        const key = `${item.grupo_localidade || "Sem grupo"} | ${labelLocal}`;
         if (!localidadeMap[key]) {
           localidadeMap[key] = {
             grupo: item.grupo_localidade || "Sem grupo",
-            local: item.localidade || "Sem local",
+            local: labelLocal,
             total: 0
           };
         }
@@ -1285,7 +1310,7 @@
 
       $("dashboardLocalidade").innerHTML = topLocalidades.length
         ? `<table>
-            <tr><th>Grupo</th><th>Local</th><th>Qtd.</th></tr>
+            <tr><th>Grupo</th><th>Local/Setor</th><th>Qtd.</th></tr>
             ${topLocalidades.map(i => `
               <tr>
                 <td>${i.grupo}</td>
@@ -1328,6 +1353,12 @@
     async function loadAdminLocaisList() {
       const wrap = $("listaLocaisAdmin");
       const grupoId = $("grupoNovoLocal").value;
+      const grupoNome = APP.gruposLocalidade.find(g => g.id === grupoId)?.nome || "";
+
+      if (grupoNome === "IGS") {
+        wrap.innerHTML = `<div class="empty">No grupo IGS, use os setores em vez de local específico.</div>`;
+        return;
+      }
 
       let lista = APP.locaisEspecificos;
       if (grupoId) lista = lista.filter(x => x.grupo_id === grupoId);
@@ -1390,9 +1421,13 @@
 
     async function addLocalEspecifico() {
       const grupoId = $("grupoNovoLocal").value;
+      const grupoNome = APP.gruposLocalidade.find(g => g.id === grupoId)?.nome || "";
       const nome = $("novoLocalEspecifico").value.trim();
+
       if (!grupoId) return showToast("Selecione o grupo.", "error");
+      if (grupoNome === "IGS") return showToast("Para IGS, use setores em vez de local específico.", "error");
       if (!nome) return showToast("Informe o local específico.", "error");
+
       const { error } = await getSupabase().from("locais_especificos").insert({ grupo_id: grupoId, nome });
       if (error) return showToast(error.message, "error");
       $("novoLocalEspecifico").value = "";
@@ -1535,10 +1570,12 @@
       const softwaresSetor = Array.from(document.querySelectorAll(".setorSoftware:checked")).map(cb => cb.value);
 
       const grupoObj = getGrupoSelecionado();
-      const localObj = getLocalEspecificoSelecionado();
       const setorObj = getSetorSelecionado();
       const tipoObj = getTipoInstalacaoSelecionado();
       const marcaObj = APP.marcas.find(x => x.id === $("marcaComputador").value);
+      const isIGS = grupoObj?.nome === "IGS";
+
+      const localObj = isIGS ? null : getLocalEspecificoSelecionado();
 
       return {
         numero_chamado: $("numeroChamado").value.trim(),
@@ -1547,8 +1584,8 @@
         grupo_localidade_id: $("grupoLocalidade").value || null,
         grupo_localidade: grupoObj?.nome || "",
 
-        localidade_id: $("localidadeEspecifica").value || null,
-        localidade: localObj?.nome || "",
+        localidade_id: isIGS ? null : ($("localidadeEspecifica").value || null),
+        localidade: isIGS ? "" : (localObj?.nome || ""),
 
         marca_computador_id: $("marcaComputador").value || null,
         marca_computador: marcaObj?.nome || "",
@@ -1560,12 +1597,10 @@
         office_ativado: $("officeAtivado").value,
         ip: $("ip").value.trim(),
 
-        proxy_inicializar: (grupoObj?.nome === "PAMB" || localObj?.nome === "PAMB - Agência ICHC")
-          ? $("proxyInicializar").value
-          : "",
+        proxy_inicializar: (!isIGS && grupoObj?.nome !== "PAMB") ? $("proxyInicializar").value : "",
 
-        setor_id: $("setorIGS").value || null,
-        setor_pa: setorObj?.nome || "",
+        setor_id: isIGS ? ($("setorIGS").value || null) : null,
+        setor_pa: isIGS ? (setorObj?.nome || "") : "",
         softwares_financeiro: softwaresSetor.join(", "),
         softwares_setor: softwaresSetor.join(", "),
 
@@ -1587,7 +1622,6 @@
         !p.numero_chamado ||
         !p.patrimonio ||
         !p.grupo_localidade_id ||
-        !p.localidade_id ||
         !p.marca_computador_id ||
         !p.tipo_instalacao_id ||
         !p.office_ativado ||
@@ -1600,6 +1634,10 @@
         throw new Error("Preencha todos os campos obrigatórios.");
       }
 
+      if (p.grupo_localidade !== "IGS" && !p.localidade_id) {
+        throw new Error("Selecione o local específico.");
+      }
+
       if (p.armazenamento_tipo === "SSD Outros" && !p.armazenamento_outros) {
         throw new Error("Informe a marca/modelo do SSD.");
       }
@@ -1608,9 +1646,8 @@
         throw new Error("É necessário Office ativado para prosseguir.");
       }
 
-      const exigeProxy = p.grupo_localidade === "PAMB" || p.localidade === "PAMB - Agência ICHC";
-      if (exigeProxy && p.proxy_inicializar !== "Sim") {
-        throw new Error("É necessário retirar o proxy do Inicializar para prosseguir.");
+      if (p.grupo_localidade !== "PAMB" && p.grupo_localidade !== "IGS" && p.proxy_inicializar !== "Sim") {
+        throw new Error("É necessário confirmar que removeu o proxy do Inicializar.");
       }
 
       if (p.tipo_instalacao === "Outros" && !p.tipo_instalacao_justificativa) {
@@ -1659,6 +1696,7 @@
       $("softwaresSetorWrap").classList.add("hidden");
       $("tipoInstalacaoJustWrap").classList.add("hidden");
       $("btnCancelarEdicao").classList.add("hidden");
+      $("localidadeEspecificaWrap").classList.remove("hidden");
       setMsg(formMsg, "");
       updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
       updateChecklist();
@@ -1808,13 +1846,15 @@
           ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
           : item.armazenamento_tipo;
 
+        const localLabel = item.grupo_localidade === "IGS" ? (item.setor_pa || "-") : (item.localidade || "-");
+
         return `
           <div class="result-card">
             <h4>${item.numero_chamado}</h4>
             <div class="meta">
               ${badge(item.patrimonio, "info")}
               ${badge(item.grupo_localidade || "-", "warning")}
-              ${badge(item.localidade || "-", "info")}
+              ${badge(localLabel, "info")}
               ${badge(item.tecnico_nome || "-", "success")}
             </div>
             <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
@@ -1844,13 +1884,11 @@
           <th>Chamado</th>
           <th>Patrimônio</th>
           <th>Grupo</th>
-          <th>Local</th>
+          <th>Local/Setor</th>
           <th>Marca</th>
           <th>Instalação</th>
           <th>Office</th>
-          <th>Proxy</th>
-          <th>Setor IGS</th>
-          <th>Softwares</th>
+          <th>Proxy removido</th>
           <th>IP</th>
           <th>Técnico</th>
           <th>RAM</th>
@@ -1863,17 +1901,17 @@
           ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
           : item.armazenamento_tipo;
 
+        const localLabel = item.grupo_localidade === "IGS" ? (item.setor_pa || "-") : (item.localidade || "-");
+
         html += `<tr>
           <td>${item.numero_chamado}</td>
           <td>${item.patrimonio}</td>
           <td>${item.grupo_localidade || "-"}</td>
-          <td>${item.localidade || "-"}</td>
+          <td>${localLabel}</td>
           <td>${item.marca_computador || "-"}</td>
           <td>${item.tipo_instalacao || "-"}</td>
           <td>${item.office_ativado || "-"}</td>
           <td>${item.proxy_inicializar || "-"}</td>
-          <td>${item.setor_pa || "-"}</td>
-          <td>${item.softwares_financeiro || "-"}</td>
           <td>${item.ip || "-"}</td>
           <td>${item.tecnico_nome || "-"}</td>
           <td>${item.memoria_ram}</td>
@@ -1921,6 +1959,8 @@
         ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
         : item.armazenamento_tipo;
 
+      const localLabel = item.grupo_localidade === "IGS" ? (item.setor_pa || "-") : (item.localidade || "-");
+
       $("detailsContent").innerHTML = `
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
@@ -1928,7 +1968,7 @@
             <p><strong>Número do chamado:</strong> ${item.numero_chamado}</p>
             <p><strong>Patrimônio:</strong> ${item.patrimonio}</p>
             <p><strong>Grupo:</strong> ${item.grupo_localidade || "-"}</p>
-            <p><strong>Local:</strong> ${item.localidade || "-"}</p>
+            <p><strong>Local/Setor:</strong> ${localLabel}</p>
             <p><strong>Marca:</strong> ${item.marca_computador || "-"}</p>
             <p><strong>IP:</strong> ${item.ip || "-"}</p>
             <p><strong>Técnico:</strong> ${item.tecnico_nome || "-"}</p>
@@ -1939,8 +1979,7 @@
             <p><strong>Tipo:</strong> ${item.tipo_instalacao || "-"}</p>
             <p><strong>Justificativa:</strong> ${item.tipo_instalacao_justificativa || "-"}</p>
             <p><strong>Office ativado:</strong> ${item.office_ativado || "-"}</p>
-            <p><strong>Proxy Inicializar:</strong> ${item.proxy_inicializar || "-"}</p>
-            <p><strong>Setor IGS:</strong> ${item.setor_pa || "-"}</p>
+            <p><strong>Proxy removido:</strong> ${item.proxy_inicializar || "-"}</p>
             <p><strong>Softwares do setor:</strong> ${item.softwares_financeiro || "-"}</p>
           </div>
 
@@ -1989,7 +2028,16 @@
       $("patrimonio").value = item.patrimonio || "";
       $("grupoLocalidade").value = item.grupo_localidade_id || "";
       updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
-      $("localidadeEspecifica").value = item.localidade_id || "";
+
+      const grupo = getGrupoSelecionado()?.nome || "";
+      const isIGS = grupo === "IGS";
+
+      $("localidadeEspecificaWrap").classList.toggle("hidden", isIGS);
+
+      if (!isIGS) {
+        $("localidadeEspecifica").value = item.localidade_id || "";
+      }
+
       $("marcaComputador").value = item.marca_computador_id || "";
       $("tipoInstalacao").value = item.tipo_instalacao_id || "";
       $("tipoInstalacaoJustificativa").value = item.tipo_instalacao_justificativa || "";
@@ -2001,11 +2049,13 @@
       const tipo = getTipoInstalacaoSelecionado();
       $("tipoInstalacaoJustWrap").classList.toggle("hidden", !tipo?.exige_justificativa);
 
-      const grupo = getGrupoSelecionado()?.nome || "";
-      const local = getLocalEspecificoSelecionado()?.nome || "";
-      const exigeProxy = grupo === "PAMB" || local === "PAMB - Agência ICHC";
-      $("proxyWrap").classList.toggle("hidden", !exigeProxy);
-      $("setorIGSWrap").classList.toggle("hidden", grupo !== "IGS");
+      $("setorIGSWrap").classList.toggle("hidden", !isIGS);
+
+      if (!isIGS && grupo !== "PAMB") {
+        $("proxyWrap").classList.remove("hidden");
+      } else {
+        $("proxyWrap").classList.add("hidden");
+      }
 
       if ($("setorIGS").value) {
         await loadSoftwaresBySetor($("setorIGS").value);
@@ -2064,13 +2114,12 @@
           "Número do chamado",
           "Patrimônio",
           "Grupo da localidade",
-          "Local específico",
+          "Local específico / Setor",
           "Marca",
           "Tipo de instalação",
           "Justificativa instalação",
           "Office ativado",
           "Proxy removido do Inicializar",
-          "Setor IGS",
           "Softwares do setor",
           "IP",
           "Técnico",
@@ -2085,18 +2134,19 @@
             ? `${item.armazenamento_tipo} (${item.armazenamento_outros})`
             : item.armazenamento_tipo;
 
+          const localLabel = item.grupo_localidade === "IGS" ? (item.setor_pa || "") : (item.localidade || "");
+
           rows.push([
             new Date(item.created_at).toLocaleString("pt-BR"),
             item.numero_chamado,
             item.patrimonio,
             item.grupo_localidade || "",
-            item.localidade || "",
+            localLabel,
             item.marca_computador || "",
             item.tipo_instalacao || "",
             item.tipo_instalacao_justificativa || "",
             item.office_ativado || "",
             item.proxy_inicializar || "",
-            item.setor_pa || "",
             item.softwares_financeiro || "",
             item.ip || "",
             item.tecnico_nome || "",
