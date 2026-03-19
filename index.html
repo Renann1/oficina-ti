@@ -580,6 +580,311 @@
       }
     }
 
+  
+
+    .app-header-shell {
+      margin-bottom: 16px;
+    }
+
+    .app-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      background:linear-gradient(180deg, var(--card), var(--soft));
+      border:1px solid var(--border);
+      border-radius:22px;
+      padding:14px 16px;
+      box-shadow:var(--shadow);
+      margin-bottom:12px;
+    }
+
+    .app-brand-block {
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .app-brand-mark {
+      width:44px;
+      height:44px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      letter-spacing:.04em;
+      color:#fff;
+      background:linear-gradient(135deg, #0f172a, #16a34a);
+      box-shadow:0 10px 20px rgba(22,163,74,.18);
+    }
+
+    .app-brand-title {
+      font-size:18px;
+      font-weight:800;
+    }
+
+    .app-brand-subtitle {
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .user-tag {
+      max-width:340px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .app-section {
+      scroll-margin-top:90px;
+    }
+
+    .section-heading {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      margin-bottom:14px;
+    }
+
+    .form-heading-actions {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .form-grid-enhanced {
+      align-items:start;
+    }
+
+    .form-block {
+      background:linear-gradient(180deg, var(--card), var(--soft));
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      min-width:0;
+    }
+
+    .form-block-header {
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:10px;
+      margin-bottom:14px;
+    }
+
+    .form-block-header h4 {
+      margin:0 0 4px;
+      font-size:18px;
+    }
+
+    .form-block-header p {
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .form-block-fields {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .form-block-fields > div {
+      min-width:0;
+    }
+
+    .desktop-only { display:flex; }
+    .mobile-only-inline, .mobile-nav, .mobile-stepper, .mobile-savebar { display:none; }
+
+    .mobile-nav {
+      gap:8px;
+      overflow:auto;
+      padding-bottom:2px;
+      margin-bottom:12px;
+    }
+
+    .mobile-nav-btn {
+      min-width:max-content;
+      width:auto;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:var(--card);
+      color:var(--text);
+      font-weight:700;
+    }
+
+    .mobile-nav-btn.active {
+      background:var(--primary);
+      color:var(--bg);
+    }
+
+    .mobile-stepper {
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:12px;
+      margin-bottom:14px;
+    }
+
+    .mobile-stepper-top {
+      display:flex;
+      justify-content:space-between;
+      gap:8px;
+      font-size:13px;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+
+    .mobile-stepper-top span:last-child {
+      color:var(--muted);
+      text-align:right;
+    }
+
+    .mobile-stepper-bar {
+      height:8px;
+      border-radius:999px;
+      background:rgba(127,127,127,.15);
+      overflow:hidden;
+    }
+
+    .mobile-stepper-bar span {
+      display:block;
+      height:100%;
+      width:25%;
+      background:linear-gradient(90deg, #16a34a, #22c55e);
+      border-radius:999px;
+      transition:width .2s ease;
+    }
+
+    .consulta-card .row {
+      align-items:flex-end;
+    }
+
+    .mobile-savebar {
+      position:sticky;
+      bottom:12px;
+      z-index:10;
+      background:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:10px;
+      gap:8px;
+      box-shadow:var(--shadow);
+      margin-top:16px;
+    }
+
+    body.dark .mobile-savebar {
+      background:rgba(17,24,39,.92);
+    }
+
+    .mobile-savebar button {
+      min-height:46px;
+    }
+
+    .desktop-summary-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
+    }
+
+    @media (max-width: 859px) {
+      .container {
+        padding:12px;
+      }
+
+      .app-header {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .topbar-actions {
+        width:100%;
+      }
+
+      .topbar-actions > * {
+        flex:1 1 auto;
+      }
+
+      .user-tag {
+        max-width:none;
+      }
+
+      .mobile-nav {
+        display:flex;
+        position:sticky;
+        top:10px;
+        z-index:20;
+      }
+
+      .desktop-only { display:none !important; }
+      .mobile-only-inline { display:inline-flex; }
+      .mobile-stepper, .mobile-savebar { display:grid; }
+
+      .grid-4 { grid-template-columns:1fr 1fr; }
+
+      .form-block {
+        padding:14px;
+      }
+
+      .form-block-fields {
+        grid-template-columns:1fr;
+      }
+
+      .form-block.mobile-hidden {
+        display:none;
+      }
+
+      .consulta-card.compact-filters #consultaFiltersWrap {
+        display:none;
+      }
+
+      .consulta-card.compact-filters .cards-results,
+      .consulta-card.compact-filters #resultadoChamados,
+      .consulta-card.compact-filters #resultadoHistorico {
+        margin-top:0;
+      }
+
+      .app-section.mobile-hidden-section {
+        display:none;
+      }
+
+      #dashboardSection .section-title,
+      #dashboardSection .section-heading {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      #dashboardSection .row,
+      #exportSection .row,
+      .consulta-card .row {
+        flex-direction:column;
+      }
+
+      #dashboardSection .grid-2 {
+        grid-template-columns:1fr;
+      }
+
+      table {
+        font-size:13px;
+      }
+
+      input, select, textarea, button {
+        font-size:16px;
+        min-height:48px;
+      }
+
+      textarea { min-height:110px; }
+    }
+
+    @media (min-width: 860px) {
+      .form-main-card .form-grid-enhanced {
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
   </style>
 </head>
 <body class="hero-bg">
@@ -688,15 +993,28 @@
     </div>
 
     <div id="appView" class="hidden">
-      <div class="topbar">
-        <div class="topbar-actions">
-          <span id="userInfo" class="tag"></span>
-          <button class="ghost" id="btnToggleTheme" style="width:auto;">Tema escuro</button>
-          <button id="btnLogout" class="ghost" style="width:auto;">Sair</button>
+      <div class="app-header-shell">
+        <div class="app-header">
+          <div class="app-brand-block">
+            <div class="app-brand-mark">MW</div>
+            <div>
+              <div class="app-brand-title">Oficina MW Microware</div>
+            </div>
+          </div>
+          <div class="topbar-actions">
+            <span id="userInfo" class="tag user-tag"></span>
+            <button class="ghost" id="btnToggleTheme" style="width:auto;">Tema escuro</button>
+            <button id="btnLogout" class="ghost" style="width:auto;">Sair</button>
+          </div>
+        </div>
+        <div class="mobile-nav" id="mobileNav">
+          <button type="button" class="mobile-nav-btn active" data-target="dashboardSection">Dashboard</button>
+          <button type="button" class="mobile-nav-btn" data-target="formSection">Novo</button>
+          <button type="button" class="mobile-nav-btn" data-target="consultaSection">Consulta</button>
         </div>
       </div>
 
-      <div class="card">
+      <div id="dashboardSection" class="card app-section">
         <div class="section-title">
           <div>
             <h3>Dashboard</h3>
@@ -789,9 +1107,25 @@
         </div>
       </div>
 
-      <div class="card">
-        <h3 id="formTitle">Novo chamado</h3>
-        <div class="grid-2">
+      <div id="formSection" class="card app-section form-main-card">
+        <div class="section-heading">
+          <div>
+            <h3 id="formTitle">Novo chamado</h3>
+            <p class="muted">Preencha os dados técnicos com mais rapidez no desktop e em etapas no mobile.</p>
+          </div>
+          <div class="desktop-only form-heading-actions">
+            <span class="badge info">Desktop: visão completa</span>
+            <span class="badge success">Mobile: preenchimento guiado</span>
+          </div>
+        </div>
+        <div class="mobile-stepper" id="mobileStepper">
+          <div class="mobile-stepper-top">
+            <span id="mobileStepLabel">Etapa 1 de 4</span>
+            <span id="mobileStepTitle">Identificação</span>
+          </div>
+          <div class="mobile-stepper-bar"><span id="mobileStepBar"></span></div>
+        </div>
+        <div class="grid-2 form-grid-enhanced" id="formGrid">
           <div>
             <label>Número do chamado</label>
             <input id="numeroChamado" placeholder="CH-1025" />
@@ -902,10 +1236,23 @@
         </div>
 
         <p id="formMsg" class="small muted" style="margin-top:10px;"></p>
+
+        <div class="mobile-savebar">
+          <button type="button" id="btnMobilePrevStep" class="ghost">Voltar</button>
+          <button type="button" id="btnMobileNextStep" class="ghost">Próxima etapa</button>
+          <button type="button" id="btnMobileSave" class="hidden">Salvar chamado</button>
+        </div>
       </div>
 
-      <div class="card">
-        <h3>Consulta</h3>
+      <div id="consultaSection" class="card app-section consulta-card">
+        <div class="section-heading">
+          <div>
+            <h3>Consulta</h3>
+            <p class="muted">Busque por patrimônio, local, técnico ou período.</p>
+          </div>
+          <button type="button" id="btnToggleConsultaFilters" class="ghost mobile-only-inline" style="width:auto;">Mostrar filtros</button>
+        </div>
+        <div id="consultaFiltersWrap">
         <div class="grid-3">
           <div>
             <label>Patrimônio</label>
@@ -951,9 +1298,10 @@
         <div style="overflow:auto; margin-top:14px;">
           <div id="resultadoHistorico"></div>
         </div>
+        </div>
       </div>
 
-      <div class="card">
+      <div id="exportSection" class="card app-section export-card">
         <h3>Exportar relatório mensal</h3>
         <div class="row">
           <input id="mesRef" type="text" placeholder="AAAA-MM (ex.: 2026-03)" />
@@ -1074,6 +1422,7 @@
     $("memoriaRam").addEventListener("change", () => {
       $("ramOutroWrap").classList.toggle("hidden", $("memoriaRam").value !== "Outro");
       updateChecklist();
+      resetMobileStep();
     });
 
     $("armazenamentoTipo").addEventListener("change", () => {
@@ -1849,6 +2198,7 @@
         loadAdminData();
       }
       loadDashboard($("dashboardMonth").value.trim());
+      setupResponsiveModes();
     }
 
     async function restoreSession() {
@@ -2483,16 +2833,165 @@
       location.reload();
     }
 
+    window.addEventListener("resize", setupResponsiveModes);
+    autoGrowTextareas();
+
+
+
+    const MOBILE_FORM_STEPS = [
+      { title: "Identificação", subtitle: "Dados principais do atendimento", ids: ["numeroChamado", "patrimonio", "ip"] },
+      { title: "Equipamento", subtitle: "Hardware e instalação", ids: ["marcaComputador", "tipoInstalacao", "tipoInstalacaoJustWrap", "memoriaRam", "ramOutroWrap", "armazenamentoTipo", "outroStorageWrap", "officeAtivado"] },
+      { title: "Localização", subtitle: "Grupo, local e regras do setor", ids: ["grupoLocalidade", "localidadeEspecificaWrap", "proxyWrap", "setorIGSWrap", "softwaresSetorWrap"] },
+      { title: "Atendimento", subtitle: "Descreva problema, resolução e checklist", ids: ["problema", "resolucao", "checklistBox"] }
+    ];
+
+    let currentMobileStep = 0;
+    let formGrouped = false;
+
+    function isMobileViewport() {
+      return window.innerWidth <= 859;
+    }
+
+    function fieldWrapperById(id) {
+      const el = $(id);
+      if (!el) return null;
+      return el.closest('#formGrid > div, #formGrid .form-block-fields > div');
+    }
+
+    function buildFormSections() {
+      if (formGrouped) return;
+      const formGrid = $('formGrid');
+      if (!formGrid) return;
+
+      MOBILE_FORM_STEPS.forEach((step, index) => {
+        const block = document.createElement('section');
+        block.className = 'form-block';
+        block.dataset.stepIndex = index;
+        block.innerHTML = `
+          <div class="form-block-header">
+            <div>
+              <h4>${step.title}</h4>
+              <p>${step.subtitle}</p>
+            </div>
+            <span class="badge info">${index + 1}/4</span>
+          </div>
+          <div class="form-block-fields"></div>
+        `;
+        const fieldsWrap = block.querySelector('.form-block-fields');
+        step.ids.forEach(id => {
+          const wrapper = fieldWrapperById(id);
+          if (wrapper) fieldsWrap.appendChild(wrapper);
+        });
+        formGrid.appendChild(block);
+      });
+      formGrouped = true;
+    }
+
+    function updateMobileStepUI() {
+      const stepLabel = $('mobileStepLabel');
+      const stepTitle = $('mobileStepTitle');
+      const stepBar = $('mobileStepBar');
+      const prevBtn = $('btnMobilePrevStep');
+      const nextBtn = $('btnMobileNextStep');
+      const saveBtn = $('btnMobileSave');
+      const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
+      const step = MOBILE_FORM_STEPS[currentMobileStep];
+
+      if (!blocks.length) return;
+
+      blocks.forEach((block, idx) => {
+        block.classList.toggle('mobile-hidden', isMobileViewport() && idx !== currentMobileStep);
+      });
+
+      if (stepLabel) stepLabel.textContent = `Etapa ${currentMobileStep + 1} de ${MOBILE_FORM_STEPS.length}`;
+      if (stepTitle) stepTitle.textContent = step.title;
+      if (stepBar) stepBar.style.width = `${((currentMobileStep + 1) / MOBILE_FORM_STEPS.length) * 100}%`;
+
+      if (prevBtn) prevBtn.classList.toggle('hidden', currentMobileStep === 0);
+      if (nextBtn) nextBtn.classList.toggle('hidden', currentMobileStep === MOBILE_FORM_STEPS.length - 1);
+      if (saveBtn) saveBtn.classList.toggle('hidden', currentMobileStep !== MOBILE_FORM_STEPS.length - 1);
+    }
+
+    function resetMobileStep() {
+      currentMobileStep = 0;
+      updateMobileStepUI();
+    }
+
+    function nextMobileStep() {
+      if (currentMobileStep < MOBILE_FORM_STEPS.length - 1) {
+        currentMobileStep += 1;
+        updateMobileStepUI();
+      }
+    }
+
+    function prevMobileStep() {
+      if (currentMobileStep > 0) {
+        currentMobileStep -= 1;
+        updateMobileStepUI();
+      }
+    }
+
+    function activateMobileSection(targetId) {
+      const mobile = isMobileViewport();
+      const sections = ['dashboardSection', 'formSection', 'consultaSection', 'exportSection'];
+      sections.forEach(id => {
+        const el = $(id);
+        if (!el) return;
+        if (!mobile) {
+          el.classList.remove('mobile-hidden-section');
+        } else {
+          const show = id === targetId || (targetId === 'consultaSection' && id === 'exportSection');
+          el.classList.toggle('mobile-hidden-section', !show);
+        }
+      });
+
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.target === targetId);
+      });
+    }
+
+    function setupResponsiveModes() {
+      buildFormSections();
+      updateMobileStepUI();
+      if (isMobileViewport()) {
+        activateMobileSection(document.querySelector('.mobile-nav-btn.active')?.dataset.target || 'dashboardSection');
+        $('consultaSection')?.classList.add('compact-filters');
+      } else {
+        activateMobileSection('dashboardSection');
+        $('consultaSection')?.classList.remove('compact-filters');
+      }
+    }
+
+    function autoGrowTextareas() {
+      document.querySelectorAll('textarea').forEach(area => {
+        const resize = () => {
+          area.style.height = 'auto';
+          area.style.height = Math.max(area.scrollHeight, 110) + 'px';
+        };
+        area.addEventListener('input', resize);
+        setTimeout(resize, 0);
+      });
+    }
+
     $("btnRegister").onclick = register;
     $("btnForgotPassword").onclick = () => toggleForgotBox();
     $("btnSendReset").onclick = sendPasswordReset;
     $("btnUpdatePassword").onclick = updateRecoveredPassword;
     $("btnLogin").onclick = login;
     $("btnSalvar").onclick = saveCall;
-    $("btnBuscar").onclick = buscar;
+    $("btnBuscar").onclick = () => { if (isMobileViewport()) activateMobileSection("consultaSection"); buscar(); };
     $("btnExportar").onclick = exportarCSV;
     $("btnLogout").onclick = logout;
     $("btnRefreshDashboard").onclick = () => loadDashboard($("dashboardMonth").value.trim());
+    $("btnMobilePrevStep").onclick = prevMobileStep;
+    $("btnMobileNextStep").onclick = nextMobileStep;
+    $("btnMobileSave").onclick = saveCall;
+    $("btnToggleConsultaFilters").onclick = () => {
+      const card = $("consultaSection");
+      card.classList.toggle("compact-filters");
+      $("btnToggleConsultaFilters").textContent = card.classList.contains("compact-filters") ? "Mostrar filtros" : "Ocultar filtros";
+    };
+    document.querySelectorAll(".mobile-nav-btn").forEach(btn => btn.onclick = () => activateMobileSection(btn.dataset.target));
 
     $("btnLimparFiltros").onclick = () => {
       $("buscaPatrimonio").value = "";
