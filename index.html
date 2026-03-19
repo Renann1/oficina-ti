@@ -657,130 +657,20 @@
       align-items:start;
     }
 
-    .form-grid-enhanced.form-grouped {
-      grid-template-columns:1fr;
-      gap:16px;
-    }
-
-    .desktop-wizard {
-      display:grid;
-      grid-template-columns:repeat(4, 1fr);
-      gap:12px;
-      margin-bottom:16px;
-    }
-
-    .desktop-step-chip {
-      border:1px solid var(--border);
-      background:linear-gradient(180deg, var(--card), var(--soft));
-      border-radius:18px;
-      padding:14px 16px;
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      min-width:0;
-      transition:.2s ease;
-    }
-
-    .desktop-step-chip-index {
-      width:34px;
-      height:34px;
-      border-radius:999px;
-      display:grid;
-      place-items:center;
-      background:rgba(37,99,235,.10);
-      color:#2563eb;
-      font-weight:800;
-      flex-shrink:0;
-    }
-
-    .desktop-step-chip strong,
-    .desktop-step-chip small {
-      display:block;
-    }
-
-    .desktop-step-chip small {
-      color:var(--muted);
-      margin-top:4px;
-      line-height:1.35;
-    }
-
-    .desktop-step-chip.is-active {
-      border-color:rgba(37,99,235,.35);
-      box-shadow:0 14px 30px rgba(37,99,235,.10);
-      transform:translateY(-1px);
-    }
-
-    .desktop-step-chip.is-done .desktop-step-chip-index {
-      background:rgba(22,163,74,.12);
-      color:#15803d;
-    }
-
-    .desktop-step-chip.is-locked {
-      opacity:.7;
-    }
-
     .form-block {
       background:linear-gradient(180deg, var(--card), var(--soft));
       border:1px solid var(--border);
-      border-radius:22px;
-      padding:18px;
+      border-radius:18px;
+      padding:16px;
       min-width:0;
-      box-shadow:0 10px 26px rgba(15,23,42,.05);
-      transition:.2s ease;
     }
 
     .form-block-header {
-      cursor:pointer;
       display:flex;
       justify-content:space-between;
       align-items:flex-start;
       gap:10px;
       margin-bottom:14px;
-    }
-
-    .form-block-main {
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-      min-width:0;
-    }
-
-    .form-block-index {
-      width:42px;
-      height:42px;
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      font-weight:800;
-      background:rgba(37,99,235,.10);
-      color:#2563eb;
-      flex-shrink:0;
-    }
-
-    .form-block-summary {
-      display:none;
-      margin-top:8px;
-      color:var(--muted);
-      font-size:13px;
-      line-height:1.45;
-    }
-
-    .form-block.done .form-block-summary {
-      display:block;
-    }
-
-    .form-block.open {
-      border-color:rgba(37,99,235,.28);
-      box-shadow:0 18px 40px rgba(15,23,42,.08);
-    }
-
-    .form-block.done .form-block-index {
-      background:rgba(22,163,74,.12);
-      color:#15803d;
-    }
-
-    .form-block.locked {
-      opacity:.68;
     }
 
     .form-block-header h4 {
@@ -805,7 +695,6 @@
     }
 
     .desktop-only { display:flex; }
-    .desktop-wizard.desktop-only { display:none; }
     .mobile-only-inline, .mobile-nav, .mobile-stepper, .mobile-savebar { display:none; }
 
     .mobile-nav {
@@ -901,30 +790,6 @@
       gap:12px;
     }
 
-    @media (min-width: 860px) {
-      .form-block .form-block-fields {
-        display:none;
-      }
-
-      .form-block:first-child .form-block-fields {
-        display:grid;
-      }
-
-      .form-block.open .form-block-fields {
-        display:grid;
-      }
-
-      .form-block.locked {
-        opacity:.82;
-      }
-    }
-
-    @media (max-width: 1120px) {
-      .desktop-wizard {
-        grid-template-columns:repeat(2, 1fr);
-      }
-    }
-
     @media (max-width: 859px) {
       .container {
         padding:12px;
@@ -955,7 +820,6 @@
       }
 
       .desktop-only { display:none !important; }
-      .desktop-wizard { display:none !important; }
       .mobile-only-inline { display:inline-flex; }
       .mobile-stepper, .mobile-savebar { display:grid; }
 
@@ -1021,202 +885,6 @@
       }
     }
 
-  
-
-    /* ===== Ajustes finais ChatGPT: layout guiado + animações + validação ===== */
-    #formGrid.form-grouped {
-      display:flex !important;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .section-heading h3 .section-icon,
-    .form-block-header h4 .step-icon {
-      margin-right:8px;
-      opacity:.92;
-    }
-
-    .form-block {
-      overflow:hidden;
-      position:relative;
-    }
-
-    .form-block::after {
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:22px;
-      pointer-events:none;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.18);
-    }
-
-    .form-block-fields {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:12px;
-      max-height:0;
-      opacity:0;
-      transform:translateY(-6px);
-      pointer-events:none;
-      overflow:hidden;
-      transition:max-height .38s ease, opacity .24s ease, transform .24s ease, margin-top .24s ease;
-      margin-top:0;
-    }
-
-    .form-block.open .form-block-fields {
-      max-height:2200px;
-      opacity:1;
-      transform:translateY(0);
-      pointer-events:auto;
-      margin-top:10px;
-    }
-
-    .form-block.locked {
-      opacity:.74;
-    }
-
-    .form-block.locked .form-block-header {
-      cursor:not-allowed;
-    }
-
-    .form-block.done .form-block-index {
-      position:relative;
-    }
-
-    .form-block.done .form-block-index::before {
-      content:"✓";
-      position:absolute;
-      right:-4px;
-      top:-4px;
-      width:18px;
-      height:18px;
-      border-radius:999px;
-      background:#16a34a;
-      color:#fff;
-      font-size:11px;
-      display:grid;
-      place-items:center;
-      box-shadow:0 4px 10px rgba(22,163,74,.25);
-    }
-
-    .field-state-wrap {
-      position:relative;
-    }
-
-    .field-state-chip {
-      position:absolute;
-      top:2px;
-      right:0;
-      font-size:11px;
-      font-weight:800;
-      border-radius:999px;
-      padding:3px 8px;
-      display:none;
-      align-items:center;
-      gap:4px;
-    }
-
-    .field-state-wrap.field-valid .field-state-chip,
-    .field-state-wrap.field-invalid .field-state-chip {
-      display:inline-flex;
-    }
-
-    .field-state-wrap.field-valid .field-state-chip {
-      background:rgba(22,163,74,.12);
-      color:#15803d;
-    }
-
-    .field-state-wrap.field-invalid .field-state-chip {
-      background:rgba(239,68,68,.12);
-      color:#b91c1c;
-    }
-
-    .field-state-wrap.field-valid input,
-    .field-state-wrap.field-valid select,
-    .field-state-wrap.field-valid textarea {
-      border-color:rgba(22,163,74,.45);
-      box-shadow:0 0 0 3px rgba(22,163,74,.10);
-    }
-
-    .field-state-wrap.field-invalid input,
-    .field-state-wrap.field-invalid select,
-    .field-state-wrap.field-invalid textarea {
-      border-color:rgba(239,68,68,.50);
-      box-shadow:0 0 0 3px rgba(239,68,68,.10);
-    }
-
-    .desktop-save-row {
-      margin-top:14px;
-    }
-
-    .desktop-save-row button:first-child {
-      box-shadow:0 12px 24px rgba(15,23,42,.14);
-    }
-
-    .form-block-header .badge.info {
-      background:rgba(37,99,235,.10);
-      color:#2563eb;
-      border:none;
-    }
-
-    body.dark .field-state-wrap.field-valid input,
-    body.dark .field-state-wrap.field-valid select,
-    body.dark .field-state-wrap.field-valid textarea {
-      box-shadow:0 0 0 3px rgba(74,222,128,.12);
-    }
-
-    body.dark .field-state-wrap.field-invalid input,
-    body.dark .field-state-wrap.field-invalid select,
-    body.dark .field-state-wrap.field-invalid textarea {
-      box-shadow:0 0 0 3px rgba(248,113,113,.12);
-    }
-
-    @media (min-width: 860px) {
-      .form-block-fields {
-        grid-template-columns:1fr 1fr;
-      }
-
-      #formSection .mobile-savebar {
-        display:none !important;
-      }
-    }
-
-    @media (max-width: 859px) {
-      #formSection {
-        padding-bottom:96px;
-      }
-
-      .form-block {
-        padding:16px;
-        border-radius:20px;
-      }
-
-      .form-block-header {
-        margin-bottom:0;
-      }
-
-      .form-block-fields {
-        grid-template-columns:1fr;
-      }
-
-      .form-block.mobile-hidden {
-        display:none !important;
-      }
-
-      #formSection > .row {
-        display:none !important;
-      }
-
-      .mobile-savebar {
-        display:flex !important;
-        position:fixed;
-        left:12px;
-        right:12px;
-        bottom:12px;
-        margin:0;
-      }
-    }
-
   </style>
 </head>
 <body class="hero-bg">
@@ -1246,6 +914,7 @@
           <h1 id="authTitle">Acessar sistema</h1>
           <p id="authSubtitle" class="muted">Entre com sua conta corporativa para continuar.</p>
         </div>
+
         <div class="auth-tabs">
           <button id="btnTabLogin" class="auth-tab active" type="button">Entrar</button>
           <button id="btnTabRegister" class="auth-tab" type="button">Criar conta</button>
@@ -1373,6 +1042,8 @@
 
       <div id="adminPanel" class="card hidden">
         <h3>Administrador</h3>
+        <p class="muted">Gerencie listas do sistema com mais organização.</p>
+
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
             <h4>Grupos de localidade</h4>
@@ -1451,7 +1122,7 @@
           </div>
           <div class="mobile-stepper-bar"><span id="mobileStepBar"></span></div>
         </div>
-                <div class="grid-2 form-grid-enhanced" id="formGrid">
+        <div class="grid-2 form-grid-enhanced" id="formGrid">
           <div>
             <label>Número do chamado</label>
             <input id="numeroChamado" placeholder="CH-1025" />
@@ -1498,7 +1169,7 @@
 
           <div id="localidadeEspecificaWrap">
             <label>Local específico</label>
-            <select id="localidadeEspecifica" disabled></select>
+            <select id="localidadeEspecifica"></select>
           </div>
 
           <div id="proxyWrap" class="hidden">
@@ -1556,7 +1227,7 @@
           </div>
         </div>
 
-        <div class="row desktop-save-row" style="margin-top:12px;">
+        <div class="row" style="margin-top:12px;">
           <button id="btnSalvar">Salvar chamado</button>
           <button id="btnCancelarEdicao" class="ghost hidden">Cancelar edição</button>
         </div>
@@ -1749,17 +1420,15 @@
       $("ramOutroWrap").classList.toggle("hidden", $("memoriaRam").value !== "Outro");
       updateChecklist();
       resetMobileStep();
-      updateFormFlow();
     });
 
     $("armazenamentoTipo").addEventListener("change", () => {
       $("outroStorageWrap").classList.toggle("hidden", $("armazenamentoTipo").value !== "SSD Outros");
       updateChecklist();
-      updateFormFlow();
     });
 
-    $("officeAtivado").addEventListener("change", () => { updateChecklist(); updateFormFlow(); });
-    $("proxyInicializar").addEventListener("change", () => { updateChecklist(); updateFormFlow(); });
+    $("officeAtivado").addEventListener("change", updateChecklist);
+    $("proxyInicializar").addEventListener("change", updateChecklist);
 
     function getSupabase() {
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || window.SUPABASE_URL.includes("COLE_AQUI")) {
@@ -1824,17 +1493,6 @@
       const grupoId = $(sourceGroupSelectId).value;
       const grupoNome = APP.gruposLocalidade.find(g => g.id === grupoId)?.nome || "";
       const el = $(targetSelectId);
-      const isFiltro = targetSelectId === "filtroLocalEspecifico";
-
-      if (!grupoId) {
-        el.innerHTML = "";
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = isFiltro ? "Todos" : "Selecione primeiro o grupo da localidade";
-        el.appendChild(option);
-        el.disabled = !isFiltro;
-        return;
-      }
 
       if (grupoNome === "IGS") {
         el.innerHTML = "";
@@ -1842,12 +1500,10 @@
         option.value = "";
         option.textContent = "Não se aplica ao IGS";
         el.appendChild(option);
-        el.disabled = true;
         return;
       }
 
-      el.disabled = false;
-      const options = APP.locaisEspecificos.filter(x => x.grupo_id === grupoId);
+      const options = APP.locaisEspecificos.filter(x => !grupoId || x.grupo_id === grupoId);
       fillRecordSelect(targetSelectId, options, placeholder);
     }
 
@@ -1917,7 +1573,6 @@
       $("tipoInstalacaoJustWrap").classList.toggle("hidden", !exige);
       if (!exige) $("tipoInstalacaoJustificativa").value = "";
       updateChecklist();
-      updateFormFlow();
     });
 
     $("grupoLocalidade").addEventListener("change", async () => {
@@ -1925,12 +1580,10 @@
 
       const grupo = getGrupoSelecionado()?.nome || "";
       const isIGS = grupo === "IGS";
-      const isPAMB = grupo === "PAMB";
 
       $("localidadeEspecificaWrap").classList.toggle("hidden", isIGS);
       $("setorIGSWrap").classList.toggle("hidden", !isIGS);
 
-      $("localidadeEspecifica").value = "";
       $("proxyInicializar").value = "";
       $("softwaresSetorContainer").innerHTML = "";
       $("softwaresSetorWrap").classList.add("hidden");
@@ -1939,14 +1592,8 @@
         $("setorIGS").value = "";
       }
 
-      if (grupo && !isPAMB && isIGS) {
-        $("proxyWrap").classList.remove("hidden");
-      } else {
-        $("proxyWrap").classList.add("hidden");
-      }
-
+      $("proxyWrap").classList.add("hidden");
       updateChecklist();
-      updateFormFlow();
     });
 
     $("localidadeEspecifica").addEventListener("change", async () => {
@@ -1954,11 +1601,13 @@
       const isIGS = grupo === "IGS";
       const isPAMB = grupo === "PAMB";
 
-      if (grupo && !isPAMB) {
+      if (isIGS || isPAMB) {
+        $("proxyWrap").classList.add("hidden");
+        $("proxyInicializar").value = "";
+      } else if (grupo) {
         $("proxyWrap").classList.remove("hidden");
       } else {
         $("proxyWrap").classList.add("hidden");
-        $("proxyInicializar").value = "";
       }
 
       if (!isIGS) {
@@ -1968,7 +1617,6 @@
       }
 
       updateChecklist();
-      updateFormFlow();
     });
 
     $("setorIGS").addEventListener("change", async () => {
@@ -1979,7 +1627,6 @@
         $("softwaresSetorWrap").classList.add("hidden");
       }
       updateChecklist();
-      updateFormFlow();
     });
 
     $("filtroGrupoLocalidade").addEventListener("change", () => {
@@ -2003,7 +1650,7 @@
         text: office ? office : "Pendente"
       });
 
-      if (grupo && grupo !== "PAMB") {
+      if (grupo && grupo !== "PAMB" && grupo !== "IGS") {
         items.push({
           label: "Proxy removido do Inicializar",
           ok: proxy === "Sim",
@@ -2600,7 +2247,7 @@
         office_ativado: $("officeAtivado").value,
         ip: $("ip").value.trim(),
 
-        proxy_inicializar: (grupoObj?.nome !== "PAMB") ? $("proxyInicializar").value : "",
+        proxy_inicializar: (!isIGS && grupoObj?.nome !== "PAMB") ? $("proxyInicializar").value : "",
 
         setor_id: isIGS ? ($("setorIGS").value || null) : null,
         setor_pa: isIGS ? (setorObj?.nome || "") : "",
@@ -2649,7 +2296,7 @@
         throw new Error("É necessário Office ativado para prosseguir.");
       }
 
-      if (p.grupo_localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
+      if (p.grupo_localidade !== "PAMB" && p.grupo_localidade !== "IGS" && p.proxy_inicializar !== "Sim") {
         throw new Error("É necessário confirmar que removeu o proxy do Inicializar.");
       }
 
@@ -2703,8 +2350,6 @@
       setMsg(formMsg, "");
       updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
       updateChecklist();
-      updateFormFlow();
-      resetMobileStep();
     }
 
     async function saveCall() {
@@ -3056,7 +2701,7 @@
 
       $("setorIGSWrap").classList.toggle("hidden", !isIGS);
 
-      if (grupo !== "PAMB" && (isIGS || $("localidadeEspecifica").value)) {
+      if (!isIGS && grupo !== "PAMB") {
         $("proxyWrap").classList.remove("hidden");
       } else {
         $("proxyWrap").classList.add("hidden");
@@ -3192,9 +2837,9 @@
 
     const MOBILE_FORM_STEPS = [
       { title: "Identificação", subtitle: "Dados principais do atendimento", ids: ["numeroChamado", "patrimonio", "ip"] },
-      { title: "Equipamento", subtitle: "Hardware, instalação e preparo", ids: ["marcaComputador", "tipoInstalacao", "tipoInstalacaoJustWrap", "memoriaRam", "ramOutroWrap", "armazenamentoTipo", "outroStorageWrap", "officeAtivado"] },
-      { title: "Localização", subtitle: "Grupo, local, proxy e regras do setor", ids: ["grupoLocalidade", "localidadeEspecificaWrap", "proxyWrap", "setorIGSWrap", "softwaresSetorWrap"] },
-      { title: "Atendimento", subtitle: "Problema, resolução e checklist final", ids: ["problema", "resolucao", "checklistBox"] }
+      { title: "Equipamento", subtitle: "Hardware e instalação", ids: ["marcaComputador", "tipoInstalacao", "tipoInstalacaoJustWrap", "memoriaRam", "ramOutroWrap", "armazenamentoTipo", "outroStorageWrap", "officeAtivado"] },
+      { title: "Localização", subtitle: "Grupo, local e regras do setor", ids: ["grupoLocalidade", "localidadeEspecificaWrap", "proxyWrap", "setorIGSWrap", "softwaresSetorWrap"] },
+      { title: "Atendimento", subtitle: "Descreva problema, resolução e checklist", ids: ["problema", "resolucao", "checklistBox"] }
     ];
 
     let currentMobileStep = 0;
@@ -3210,8 +2855,6 @@
       return el.closest('#formGrid > div, #formGrid .form-block-fields > div');
     }
 
-    function buildDesktopWizard() { return; }
-
     function buildFormSections() {
       if (formGrouped) return;
       const formGrid = $('formGrid');
@@ -3223,13 +2866,9 @@
         block.dataset.stepIndex = index;
         block.innerHTML = `
           <div class="form-block-header">
-            <div class="form-block-main">
-              <div class="form-block-index">${index + 1}</div>
-              <div>
-                <h4>${step.title}</h4>
-                <p>${step.subtitle}</p>
-                <div class="form-block-summary"></div>
-              </div>
+            <div>
+              <h4>${step.title}</h4>
+              <p>${step.subtitle}</p>
             </div>
             <span class="badge info">${index + 1}/4</span>
           </div>
@@ -3240,98 +2879,9 @@
           const wrapper = fieldWrapperById(id);
           if (wrapper) fieldsWrap.appendChild(wrapper);
         });
-        block.querySelector('.form-block-header').addEventListener('click', () => {
-          if (isMobileViewport()) return;
-          const maxOpen = getFirstIncompleteStep();
-          const idx = Number(block.dataset.stepIndex || 0);
-          if (idx > maxOpen) return;
-          document.querySelectorAll('#formGrid .form-block').forEach(b => b.classList.remove('manual-open'));
-          block.classList.add('manual-open');
-          updateFormFlow();
-        });
         formGrid.appendChild(block);
       });
-
-      formGrid.classList.add('form-grouped');
-      buildDesktopWizard();
       formGrouped = true;
-    }
-
-    function hasFilledValue(id) {
-      const el = $(id);
-      if (!el || el.closest('.hidden')) return true;
-      if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
-      return !!String(el.value || '').trim();
-    }
-
-    function getStepSummary(index) {
-      const grupo = getGrupoSelecionado()?.nome || '';
-      const local = getLocalEspecificoSelecionado()?.nome || '';
-      const setor = getSetorSelecionado()?.nome || '';
-      const tipo = getTipoInstalacaoSelecionado()?.nome || '';
-      const summaries = {
-        0: [$("numeroChamado").value, $("patrimonio").value, $("ip").value].filter(Boolean),
-        1: [APP.marcas.find(x => x.id === $("marcaComputador").value)?.nome || '', tipo, $("memoriaRam").value, $("armazenamentoTipo").value].filter(Boolean),
-        2: [grupo, grupo === 'IGS' ? setor : local, $("proxyInicializar").value ? `Proxy: ${$("proxyInicializar").value}` : ''].filter(Boolean),
-        3: [$("problema").value.trim() ? 'Problema preenchido' : '', $("resolucao").value.trim() ? 'Resolução preenchida' : ''].filter(Boolean)
-      };
-      const parts = summaries[index] || [];
-      return parts.length ? parts.join(' • ') : 'Preencha esta etapa para liberar a próxima.';
-    }
-
-    function isStepComplete(index) {
-      const grupo = getGrupoSelecionado()?.nome || '';
-      const tipo = getTipoInstalacaoSelecionado();
-      switch (index) {
-        case 0:
-          return hasFilledValue('numeroChamado') && hasFilledValue('patrimonio') && hasFilledValue('ip');
-        case 1:
-          return hasFilledValue('marcaComputador') && hasFilledValue('tipoInstalacao') && (!tipo?.exige_justificativa || hasFilledValue('tipoInstalacaoJustificativa')) && hasFilledValue('memoriaRam') && ($("memoriaRam").value !== 'Outro' || hasFilledValue('memoriaRamOutro')) && hasFilledValue('armazenamentoTipo') && ($("armazenamentoTipo").value !== 'SSD Outros' || hasFilledValue('armazenamentoOutros')) && hasFilledValue('officeAtivado');
-        case 2:
-          if (!hasFilledValue('grupoLocalidade')) return false;
-          if (grupo === 'IGS') {
-            return hasFilledValue('setorIGS') && hasFilledValue('proxyInicializar');
-          }
-          if (grupo === 'PAMB') {
-            return hasFilledValue('grupoLocalidade') && hasFilledValue('localidadeEspecifica');
-          }
-          return hasFilledValue('localidadeEspecifica') && hasFilledValue('proxyInicializar');
-        case 3:
-          return hasFilledValue('problema') && hasFilledValue('resolucao');
-        default:
-          return false;
-      }
-    }
-
-    function getFirstIncompleteStep() {
-      for (let i = 0; i < MOBILE_FORM_STEPS.length; i += 1) {
-        if (!isStepComplete(i)) return i;
-      }
-      return MOBILE_FORM_STEPS.length - 1;
-    }
-
-    function updateDesktopWizardUI(activeStep) { return; }
-
-    function updateFormFlow() {
-      const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
-      if (!blocks.length) return;
-
-      const firstIncomplete = getFirstIncompleteStep();
-      const manualOpen = document.querySelector('#formGrid .form-block.manual-open');
-      const manualIndex = manualOpen ? Number(manualOpen.dataset.stepIndex || 0) : null;
-      const activeStep = isMobileViewport() ? currentMobileStep : (manualIndex !== null && manualIndex <= firstIncomplete ? manualIndex : firstIncomplete);
-
-      blocks.forEach((block, idx) => {
-        const summary = block.querySelector('.form-block-summary');
-        if (summary) summary.textContent = getStepSummary(idx);
-        block.classList.toggle('done', isStepComplete(idx));
-        block.classList.toggle('locked', !isMobileViewport() && idx > firstIncomplete);
-        block.classList.toggle('open', idx === activeStep || (isMobileViewport() && idx === currentMobileStep));
-        if (isMobileViewport()) block.classList.remove('manual-open');
-        block.classList.toggle('mobile-hidden', isMobileViewport() && idx !== currentMobileStep);
-      });
-
-      updateDesktopWizardUI(firstIncomplete);
     }
 
     function updateMobileStepUI() {
@@ -3341,10 +2891,14 @@
       const prevBtn = $('btnMobilePrevStep');
       const nextBtn = $('btnMobileNextStep');
       const saveBtn = $('btnMobileSave');
-      const maxUnlocked = Math.min(getFirstIncompleteStep(), MOBILE_FORM_STEPS.length - 1);
-
-      if (currentMobileStep > maxUnlocked) currentMobileStep = maxUnlocked;
+      const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
       const step = MOBILE_FORM_STEPS[currentMobileStep];
+
+      if (!blocks.length) return;
+
+      blocks.forEach((block, idx) => {
+        block.classList.toggle('mobile-hidden', isMobileViewport() && idx !== currentMobileStep);
+      });
 
       if (stepLabel) stepLabel.textContent = `Etapa ${currentMobileStep + 1} de ${MOBILE_FORM_STEPS.length}`;
       if (stepTitle) stepTitle.textContent = step.title;
@@ -3353,8 +2907,6 @@
       if (prevBtn) prevBtn.classList.toggle('hidden', currentMobileStep === 0);
       if (nextBtn) nextBtn.classList.toggle('hidden', currentMobileStep === MOBILE_FORM_STEPS.length - 1);
       if (saveBtn) saveBtn.classList.toggle('hidden', currentMobileStep !== MOBILE_FORM_STEPS.length - 1);
-
-      updateFormFlow();
     }
 
     function resetMobileStep() {
@@ -3363,10 +2915,6 @@
     }
 
     function nextMobileStep() {
-      if (!isStepComplete(currentMobileStep)) {
-        showToast('Preencha a etapa atual antes de avançar.', 'error');
-        return;
-      }
       if (currentMobileStep < MOBILE_FORM_STEPS.length - 1) {
         currentMobileStep += 1;
         updateMobileStepUI();
@@ -3402,7 +2950,6 @@
     function setupResponsiveModes() {
       buildFormSections();
       updateMobileStepUI();
-      updateFormFlow();
       if (isMobileViewport()) {
         activateMobileSection(document.querySelector('.mobile-nav-btn.active')?.dataset.target || 'dashboardSection');
         $('consultaSection')?.classList.add('compact-filters');
@@ -3418,7 +2965,7 @@
           area.style.height = 'auto';
           area.style.height = Math.max(area.scrollHeight, 110) + 'px';
         };
-        area.addEventListener('input', () => { resize(); updateFormFlow(); });
+        area.addEventListener('input', resize);
         setTimeout(resize, 0);
       });
     }
@@ -3442,13 +2989,6 @@
       $("btnToggleConsultaFilters").textContent = card.classList.contains("compact-filters") ? "Mostrar filtros" : "Ocultar filtros";
     };
     document.querySelectorAll(".mobile-nav-btn").forEach(btn => btn.onclick = () => activateMobileSection(btn.dataset.target));
-
-    ["numeroChamado", "patrimonio", "ip", "tipoInstalacaoJustificativa"].forEach(id => {
-      $(id)?.addEventListener('input', updateFormFlow);
-    });
-    ["marcaComputador", "tipoInstalacao", "officeAtivado", "grupoLocalidade", "localidadeEspecifica", "proxyInicializar", "setorIGS", "memoriaRam", "armazenamentoTipo"].forEach(id => {
-      $(id)?.addEventListener('change', updateFormFlow);
-    });
 
     $("btnLimparFiltros").onclick = () => {
       $("buscaPatrimonio").value = "";
@@ -3474,229 +3014,5 @@
     handleRecoveryFlow();
     restoreSession();
   </script>
-
-<script>
-(function(){
-  const STEP_META = [
-    { icon: '🧾', title: 'Identificação' },
-    { icon: '💻', title: 'Equipamento' },
-    { icon: '📍', title: 'Localização' },
-    { icon: '🛠️', title: 'Atendimento' }
-  ];
-
-  const REQUIRED_IDS = [
-    'numeroChamado','patrimonio','ip','marcaComputador','tipoInstalacao','officeAtivado',
-    'memoriaRam','armazenamentoTipo','grupoLocalidade','localidadeEspecifica','proxyInicializar',
-    'setorIGS','problema','resolucao','tipoInstalacaoJustificativa','memoriaRamOutro','armazenamentoOutros'
-  ];
-
-  function $id(id){ return document.getElementById(id); }
-  function isMobile(){ return window.innerWidth <= 859; }
-  function visible(el){ return !!(el && !el.closest('.hidden') && getComputedStyle(el).display !== 'none'); }
-  function hasValue(el){
-    if(!el) return false;
-    if(el.type === 'checkbox' || el.type === 'radio') return el.checked;
-    return String(el.value || '').trim() !== '';
-  }
-  function fieldWrapFor(id){
-    const el = $id(id);
-    if(!el) return null;
-    return el.closest('#formGrid .form-block-fields > div, #formGrid > div');
-  }
-  function ensureFieldChips(){
-    REQUIRED_IDS.forEach(id => {
-      const wrap = fieldWrapFor(id);
-      if(!wrap || wrap.dataset.stateReady === '1') return;
-      wrap.classList.add('field-state-wrap');
-      const label = wrap.querySelector('label');
-      if(label){
-        label.style.paddingRight = '74px';
-        const chip = document.createElement('span');
-        chip.className = 'field-state-chip';
-        chip.textContent = 'Pendente';
-        wrap.appendChild(chip);
-      }
-      wrap.dataset.stateReady = '1';
-    });
-  }
-
-  function isFieldRequiredNow(id){
-    const grupo = window.getGrupoSelecionado ? (window.getGrupoSelecionado()?.nome || '') : '';
-    const tipo = window.getTipoInstalacaoSelecionado ? window.getTipoInstalacaoSelecionado() : null;
-    if(id === 'localidadeEspecifica') return grupo && grupo !== 'IGS';
-    if(id === 'proxyInicializar') return grupo && grupo !== 'PAMB';
-    if(id === 'setorIGS') return grupo === 'IGS';
-    if(id === 'tipoInstalacaoJustificativa') return !!tipo?.exige_justificativa;
-    if(id === 'memoriaRamOutro') return $id('memoriaRam')?.value === 'Outro';
-    if(id === 'armazenamentoOutros') return $id('armazenamentoTipo')?.value === 'SSD Outros';
-    return true;
-  }
-
-  function updateLocalSpecificLock(){
-    const grupo = $id('grupoLocalidade');
-    const local = $id('localidadeEspecifica');
-    if(!grupo || !local) return;
-    const grupoNome = window.getGrupoSelecionado ? (window.getGrupoSelecionado()?.nome || '') : '';
-    if(!grupo.value || grupoNome === 'IGS') {
-      local.value = '';
-      local.disabled = true;
-    }
-  }
-
-  function applyValidationStates(){
-    ensureFieldChips();
-    REQUIRED_IDS.forEach(id => {
-      const el = $id(id);
-      const wrap = fieldWrapFor(id);
-      if(!el || !wrap) return;
-      const chip = wrap.querySelector('.field-state-chip');
-      wrap.classList.remove('field-valid','field-invalid');
-      if(!visible(wrap) || !isFieldRequiredNow(id)) {
-        if(chip) chip.style.display = 'none';
-        return;
-      }
-      const touched = el.dataset.touched === '1' || hasValue(el);
-      if(!touched) {
-        if(chip) chip.style.display = 'none';
-        return;
-      }
-      const ok = hasValue(el);
-      wrap.classList.add(ok ? 'field-valid' : 'field-invalid');
-      if(chip){
-        chip.style.display = 'inline-flex';
-        chip.textContent = ok ? '✓ OK' : '⚠ Campo';
-      }
-    });
-  }
-
-  function addIcons(){
-    const titles = {
-      formTitle: '🧾 Novo chamado'
-    };
-    Object.entries(titles).forEach(([id, text]) => {
-      const el = $id(id);
-      if(el && !el.dataset.iconized){ el.textContent = text; el.dataset.iconized = '1'; }
-    });
-    document.querySelectorAll('#dashboardSection .section-heading h3, #consultaSection .section-heading h3, #exportSection h3').forEach(el => {
-      if(el.dataset.iconized) return;
-      if(/Dashboard/.test(el.textContent)) el.textContent = '📊 ' + el.textContent;
-      else if(/Consulta/.test(el.textContent)) el.textContent = '🔎 ' + el.textContent;
-      else if(/Exportar/.test(el.textContent)) el.textContent = '⬇️ ' + el.textContent;
-      el.dataset.iconized = '1';
-    });
-    document.querySelectorAll('#formGrid .form-block').forEach((block, index) => {
-      const h4 = block.querySelector('.form-block-header h4');
-      if(h4 && !h4.dataset.iconized){
-        const meta = STEP_META[index] || {icon:'•'};
-        h4.innerHTML = '<span class="step-icon">'+meta.icon+'</span>' + meta.title;
-        h4.dataset.iconized = '1';
-      }
-    });
-  }
-
-  function syncStepPanels(){
-    const formGrid = $id('formGrid');
-    if(!formGrid || !formGrid.classList.contains('form-grouped')) return;
-    const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
-    if(!blocks.length) return;
-
-    updateLocalSpecificLock();
-    let firstIncomplete = 0;
-    if(typeof window.getFirstIncompleteStep === 'function') {
-      firstIncomplete = window.getFirstIncompleteStep();
-    }
-    const maxAllowed = Math.min(firstIncomplete, blocks.length - 1);
-    const manual = document.querySelector('#formGrid .form-block.manual-open');
-    let active = isMobile() ? (window.currentMobileStep || 0) : maxAllowed;
-    if(!isMobile() && manual){
-      const idx = Number(manual.dataset.stepIndex || 0);
-      if(idx <= maxAllowed) active = idx;
-    }
-    if(isMobile() && active > maxAllowed) active = maxAllowed;
-
-    blocks.forEach((block, idx) => {
-      block.classList.toggle('open', idx === active);
-      block.classList.toggle('locked', !isMobile() && idx > maxAllowed);
-      block.classList.toggle('mobile-hidden', isMobile() && idx !== active);
-      const summary = block.querySelector('.form-block-summary');
-      if(summary && typeof window.getStepSummary === 'function') summary.textContent = window.getStepSummary(idx);
-      if(typeof window.isStepComplete === 'function') block.classList.toggle('done', window.isStepComplete(idx));
-    });
-
-    const prevBtn = $id('btnMobilePrevStep');
-    const nextBtn = $id('btnMobileNextStep');
-    const saveBtn = $id('btnMobileSave');
-    if(prevBtn) prevBtn.classList.toggle('hidden', !isMobile() || active === 0);
-    if(nextBtn) nextBtn.classList.toggle('hidden', !isMobile() || active >= blocks.length - 1);
-    if(saveBtn) saveBtn.classList.toggle('hidden', !isMobile() || active !== blocks.length - 1);
-
-    applyValidationStates();
-    addIcons();
-  }
-
-  function wireDesktopClicks(){
-    document.querySelectorAll('#formGrid .form-block').forEach(block => {
-      if(block.dataset.clickReady === '1') return;
-      block.dataset.clickReady = '1';
-      block.querySelector('.form-block-header')?.addEventListener('click', () => {
-        if(isMobile()) return;
-        const idx = Number(block.dataset.stepIndex || 0);
-        const maxAllowed = typeof window.getFirstIncompleteStep === 'function' ? window.getFirstIncompleteStep() : 0;
-        if(idx > maxAllowed) return;
-        document.querySelectorAll('#formGrid .form-block').forEach(b => b.classList.remove('manual-open'));
-        block.classList.add('manual-open');
-        syncStepPanels();
-      });
-    });
-  }
-
-  function enhance(){
-    const formGrid = $id('formGrid');
-    if(!formGrid) return;
-    wireDesktopClicks();
-    syncStepPanels();
-  }
-
-  function markTouched(target){
-    if(target && /^(INPUT|SELECT|TEXTAREA)$/.test(target.tagName)) {
-      target.dataset.touched = '1';
-      setTimeout(enhance, 10);
-    }
-  }
-
-  document.addEventListener('input', e => {
-    if(e.target.closest('#formGrid')) markTouched(e.target);
-  });
-  document.addEventListener('change', e => {
-    if(e.target.closest('#formGrid')) markTouched(e.target);
-  });
-  document.addEventListener('blur', e => {
-    if(e.target.closest && e.target.closest('#formGrid')) markTouched(e.target);
-  }, true);
-
-  const wrap = (name) => {
-    if(typeof window[name] !== 'function') return;
-    const old = window[name];
-    window[name] = function(...args){
-      const result = old.apply(this, args);
-      if(result && typeof result.then === 'function') {
-        return result.finally(() => setTimeout(enhance, 0));
-      }
-      setTimeout(enhance, 0);
-      return result;
-    };
-  };
-  ['updateFormFlow','updateMobileStepUI','setupResponsiveModes','updateLocalidadeEspecificaOptions','updateChecklist','handleRecoveryFlow'].forEach(wrap);
-
-  const observer = new MutationObserver(() => { enhance(); });
-  observer.observe(document.body, { childList:true, subtree:true });
-  window.addEventListener('resize', () => setTimeout(enhance, 30));
-  window.__mwEnhance = enhance;
-  setTimeout(enhance, 150);
-  setTimeout(enhance, 600);
-  setTimeout(enhance, 1200);
-})();
-</script>
-
 </body>
 </html>
