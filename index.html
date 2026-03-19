@@ -657,12 +657,76 @@
       align-items:start;
     }
 
+    .form-grid-enhanced.form-grouped {
+      grid-template-columns:1fr;
+      gap:16px;
+    }
+
+    .desktop-wizard {
+      display:grid;
+      grid-template-columns:repeat(4, 1fr);
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .desktop-step-chip {
+      border:1px solid var(--border);
+      background:linear-gradient(180deg, var(--card), var(--soft));
+      border-radius:18px;
+      padding:14px 16px;
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      min-width:0;
+      transition:.2s ease;
+    }
+
+    .desktop-step-chip-index {
+      width:34px;
+      height:34px;
+      border-radius:999px;
+      display:grid;
+      place-items:center;
+      background:rgba(37,99,235,.10);
+      color:#2563eb;
+      font-weight:800;
+      flex-shrink:0;
+    }
+
+    .desktop-step-chip strong,
+    .desktop-step-chip small {
+      display:block;
+    }
+
+    .desktop-step-chip small {
+      color:var(--muted);
+      margin-top:4px;
+      line-height:1.35;
+    }
+
+    .desktop-step-chip.is-active {
+      border-color:rgba(37,99,235,.35);
+      box-shadow:0 14px 30px rgba(37,99,235,.10);
+      transform:translateY(-1px);
+    }
+
+    .desktop-step-chip.is-done .desktop-step-chip-index {
+      background:rgba(22,163,74,.12);
+      color:#15803d;
+    }
+
+    .desktop-step-chip.is-locked {
+      opacity:.7;
+    }
+
     .form-block {
       background:linear-gradient(180deg, var(--card), var(--soft));
       border:1px solid var(--border);
-      border-radius:18px;
-      padding:16px;
+      border-radius:22px;
+      padding:18px;
       min-width:0;
+      box-shadow:0 10px 26px rgba(15,23,42,.05);
+      transition:.2s ease;
     }
 
     .form-block-header {
@@ -671,6 +735,51 @@
       align-items:flex-start;
       gap:10px;
       margin-bottom:14px;
+    }
+
+    .form-block-main {
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      min-width:0;
+    }
+
+    .form-block-index {
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      background:rgba(37,99,235,.10);
+      color:#2563eb;
+      flex-shrink:0;
+    }
+
+    .form-block-summary {
+      display:none;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+
+    .form-block.done .form-block-summary {
+      display:block;
+    }
+
+    .form-block.open {
+      border-color:rgba(37,99,235,.28);
+      box-shadow:0 18px 40px rgba(15,23,42,.08);
+    }
+
+    .form-block.done .form-block-index {
+      background:rgba(22,163,74,.12);
+      color:#15803d;
+    }
+
+    .form-block.locked {
+      opacity:.68;
     }
 
     .form-block-header h4 {
@@ -695,6 +804,7 @@
     }
 
     .desktop-only { display:flex; }
+    .desktop-wizard.desktop-only { display:grid; }
     .mobile-only-inline, .mobile-nav, .mobile-stepper, .mobile-savebar { display:none; }
 
     .mobile-nav {
@@ -790,6 +900,22 @@
       gap:12px;
     }
 
+    @media (min-width: 860px) {
+      .form-block .form-block-fields {
+        display:none;
+      }
+
+      .form-block.open .form-block-fields {
+        display:grid;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .desktop-wizard {
+        grid-template-columns:repeat(2, 1fr);
+      }
+    }
+
     @media (max-width: 859px) {
       .container {
         padding:12px;
@@ -820,6 +946,7 @@
       }
 
       .desktop-only { display:none !important; }
+      .desktop-wizard { display:none !important; }
       .mobile-only-inline { display:inline-flex; }
       .mobile-stepper, .mobile-savebar { display:grid; }
 
@@ -915,6 +1042,8 @@
           <p id="authSubtitle" class="muted">Entre com sua conta corporativa para continuar.</p>
         </div>
 
+        <p class="auth-highlight">Oficina MW Microware • Controle técnico, chamados, histórico e relatórios.</p>
+
         <div class="auth-tabs">
           <button id="btnTabLogin" class="auth-tab active" type="button">Entrar</button>
           <button id="btnTabRegister" class="auth-tab" type="button">Criar conta</button>
@@ -999,6 +1128,7 @@
             <div class="app-brand-mark">MW</div>
             <div>
               <div class="app-brand-title">Oficina MW Microware</div>
+              <div class="app-brand-subtitle">Controle técnico, chamados e histórico</div>
             </div>
           </div>
           <div class="topbar-actions">
@@ -1111,8 +1241,11 @@
         <div class="section-heading">
           <div>
             <h3 id="formTitle">Novo chamado</h3>
+            <p class="muted">Preencha os dados técnicos com mais rapidez no desktop e em etapas no mobile.</p>
           </div>
           <div class="desktop-only form-heading-actions">
+            <span class="badge info">Desktop: visão completa</span>
+            <span class="badge success">Mobile: preenchimento guiado</span>
           </div>
         </div>
         <div class="mobile-stepper" id="mobileStepper">
@@ -1122,6 +1255,7 @@
           </div>
           <div class="mobile-stepper-bar"><span id="mobileStepBar"></span></div>
         </div>
+        <div class="desktop-wizard desktop-only" id="desktopWizard"></div>
         <div class="grid-2 form-grid-enhanced" id="formGrid">
           <div>
             <label>Número do chamado</label>
@@ -1169,7 +1303,7 @@
 
           <div id="localidadeEspecificaWrap">
             <label>Local específico</label>
-            <select id="localidadeEspecifica"></select>
+            <select id="localidadeEspecifica" disabled></select>
           </div>
 
           <div id="proxyWrap" class="hidden">
@@ -1420,15 +1554,17 @@
       $("ramOutroWrap").classList.toggle("hidden", $("memoriaRam").value !== "Outro");
       updateChecklist();
       resetMobileStep();
+      updateFormFlow();
     });
 
     $("armazenamentoTipo").addEventListener("change", () => {
       $("outroStorageWrap").classList.toggle("hidden", $("armazenamentoTipo").value !== "SSD Outros");
       updateChecklist();
+      updateFormFlow();
     });
 
-    $("officeAtivado").addEventListener("change", updateChecklist);
-    $("proxyInicializar").addEventListener("change", updateChecklist);
+    $("officeAtivado").addEventListener("change", () => { updateChecklist(); updateFormFlow(); });
+    $("proxyInicializar").addEventListener("change", () => { updateChecklist(); updateFormFlow(); });
 
     function getSupabase() {
       if (!window.SUPABASE_URL || !window.SUPABASE_ANON_KEY || window.SUPABASE_URL.includes("COLE_AQUI")) {
@@ -1493,6 +1629,17 @@
       const grupoId = $(sourceGroupSelectId).value;
       const grupoNome = APP.gruposLocalidade.find(g => g.id === grupoId)?.nome || "";
       const el = $(targetSelectId);
+      const isFiltro = targetSelectId === "filtroLocalEspecifico";
+
+      if (!grupoId) {
+        el.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = isFiltro ? "Todos" : "Selecione primeiro o grupo da localidade";
+        el.appendChild(option);
+        el.disabled = !isFiltro;
+        return;
+      }
 
       if (grupoNome === "IGS") {
         el.innerHTML = "";
@@ -1500,10 +1647,12 @@
         option.value = "";
         option.textContent = "Não se aplica ao IGS";
         el.appendChild(option);
+        el.disabled = true;
         return;
       }
 
-      const options = APP.locaisEspecificos.filter(x => !grupoId || x.grupo_id === grupoId);
+      el.disabled = false;
+      const options = APP.locaisEspecificos.filter(x => x.grupo_id === grupoId);
       fillRecordSelect(targetSelectId, options, placeholder);
     }
 
@@ -1573,6 +1722,7 @@
       $("tipoInstalacaoJustWrap").classList.toggle("hidden", !exige);
       if (!exige) $("tipoInstalacaoJustificativa").value = "";
       updateChecklist();
+      updateFormFlow();
     });
 
     $("grupoLocalidade").addEventListener("change", async () => {
@@ -1580,10 +1730,12 @@
 
       const grupo = getGrupoSelecionado()?.nome || "";
       const isIGS = grupo === "IGS";
+      const isPAMB = grupo === "PAMB";
 
       $("localidadeEspecificaWrap").classList.toggle("hidden", isIGS);
       $("setorIGSWrap").classList.toggle("hidden", !isIGS);
 
+      $("localidadeEspecifica").value = "";
       $("proxyInicializar").value = "";
       $("softwaresSetorContainer").innerHTML = "";
       $("softwaresSetorWrap").classList.add("hidden");
@@ -1592,8 +1744,14 @@
         $("setorIGS").value = "";
       }
 
-      $("proxyWrap").classList.add("hidden");
+      if (grupo && !isPAMB && isIGS) {
+        $("proxyWrap").classList.remove("hidden");
+      } else {
+        $("proxyWrap").classList.add("hidden");
+      }
+
       updateChecklist();
+      updateFormFlow();
     });
 
     $("localidadeEspecifica").addEventListener("change", async () => {
@@ -1601,13 +1759,11 @@
       const isIGS = grupo === "IGS";
       const isPAMB = grupo === "PAMB";
 
-      if (isIGS || isPAMB) {
-        $("proxyWrap").classList.add("hidden");
-        $("proxyInicializar").value = "";
-      } else if (grupo) {
+      if (grupo && !isPAMB) {
         $("proxyWrap").classList.remove("hidden");
       } else {
         $("proxyWrap").classList.add("hidden");
+        $("proxyInicializar").value = "";
       }
 
       if (!isIGS) {
@@ -1617,6 +1773,7 @@
       }
 
       updateChecklist();
+      updateFormFlow();
     });
 
     $("setorIGS").addEventListener("change", async () => {
@@ -1627,6 +1784,7 @@
         $("softwaresSetorWrap").classList.add("hidden");
       }
       updateChecklist();
+      updateFormFlow();
     });
 
     $("filtroGrupoLocalidade").addEventListener("change", () => {
@@ -1650,7 +1808,7 @@
         text: office ? office : "Pendente"
       });
 
-      if (grupo && grupo !== "PAMB" && grupo !== "IGS") {
+      if (grupo && grupo !== "PAMB") {
         items.push({
           label: "Proxy removido do Inicializar",
           ok: proxy === "Sim",
@@ -2247,7 +2405,7 @@
         office_ativado: $("officeAtivado").value,
         ip: $("ip").value.trim(),
 
-        proxy_inicializar: (!isIGS && grupoObj?.nome !== "PAMB") ? $("proxyInicializar").value : "",
+        proxy_inicializar: (grupoObj?.nome !== "PAMB") ? $("proxyInicializar").value : "",
 
         setor_id: isIGS ? ($("setorIGS").value || null) : null,
         setor_pa: isIGS ? (setorObj?.nome || "") : "",
@@ -2296,7 +2454,7 @@
         throw new Error("É necessário Office ativado para prosseguir.");
       }
 
-      if (p.grupo_localidade !== "PAMB" && p.grupo_localidade !== "IGS" && p.proxy_inicializar !== "Sim") {
+      if (p.grupo_localidade !== "PAMB" && p.proxy_inicializar !== "Sim") {
         throw new Error("É necessário confirmar que removeu o proxy do Inicializar.");
       }
 
@@ -2350,6 +2508,8 @@
       setMsg(formMsg, "");
       updateLocalidadeEspecificaOptions("grupoLocalidade", "localidadeEspecifica", "Selecione");
       updateChecklist();
+      updateFormFlow();
+      resetMobileStep();
     }
 
     async function saveCall() {
@@ -2701,7 +2861,7 @@
 
       $("setorIGSWrap").classList.toggle("hidden", !isIGS);
 
-      if (!isIGS && grupo !== "PAMB") {
+      if (grupo !== "PAMB" && (isIGS || $("localidadeEspecifica").value)) {
         $("proxyWrap").classList.remove("hidden");
       } else {
         $("proxyWrap").classList.add("hidden");
@@ -2837,9 +2997,9 @@
 
     const MOBILE_FORM_STEPS = [
       { title: "Identificação", subtitle: "Dados principais do atendimento", ids: ["numeroChamado", "patrimonio", "ip"] },
-      { title: "Equipamento", subtitle: "Hardware e instalação", ids: ["marcaComputador", "tipoInstalacao", "tipoInstalacaoJustWrap", "memoriaRam", "ramOutroWrap", "armazenamentoTipo", "outroStorageWrap", "officeAtivado"] },
-      { title: "Localização", subtitle: "Grupo, local e regras do setor", ids: ["grupoLocalidade", "localidadeEspecificaWrap", "proxyWrap", "setorIGSWrap", "softwaresSetorWrap"] },
-      { title: "Atendimento", subtitle: "Descreva problema, resolução e checklist", ids: ["problema", "resolucao", "checklistBox"] }
+      { title: "Equipamento", subtitle: "Hardware, instalação e preparo", ids: ["marcaComputador", "tipoInstalacao", "tipoInstalacaoJustWrap", "memoriaRam", "ramOutroWrap", "armazenamentoTipo", "outroStorageWrap", "officeAtivado"] },
+      { title: "Localização", subtitle: "Grupo, local, proxy e regras do setor", ids: ["grupoLocalidade", "localidadeEspecificaWrap", "proxyWrap", "setorIGSWrap", "softwaresSetorWrap"] },
+      { title: "Atendimento", subtitle: "Problema, resolução e checklist final", ids: ["problema", "resolucao", "checklistBox"] }
     ];
 
     let currentMobileStep = 0;
@@ -2855,6 +3015,20 @@
       return el.closest('#formGrid > div, #formGrid .form-block-fields > div');
     }
 
+    function buildDesktopWizard() {
+      const wrap = $('desktopWizard');
+      if (!wrap) return;
+      wrap.innerHTML = MOBILE_FORM_STEPS.map((step, index) => `
+        <div class="desktop-step-chip" data-desktop-step="${index}">
+          <span class="desktop-step-chip-index">${index + 1}</span>
+          <div>
+            <strong>${step.title}</strong>
+            <small>${step.subtitle}</small>
+          </div>
+        </div>
+      `).join('');
+    }
+
     function buildFormSections() {
       if (formGrouped) return;
       const formGrid = $('formGrid');
@@ -2866,9 +3040,13 @@
         block.dataset.stepIndex = index;
         block.innerHTML = `
           <div class="form-block-header">
-            <div>
-              <h4>${step.title}</h4>
-              <p>${step.subtitle}</p>
+            <div class="form-block-main">
+              <div class="form-block-index">${index + 1}</div>
+              <div>
+                <h4>${step.title}</h4>
+                <p>${step.subtitle}</p>
+                <div class="form-block-summary"></div>
+              </div>
             </div>
             <span class="badge info">${index + 1}/4</span>
           </div>
@@ -2881,7 +3059,90 @@
         });
         formGrid.appendChild(block);
       });
+
+      formGrid.classList.add('form-grouped');
+      buildDesktopWizard();
       formGrouped = true;
+    }
+
+    function hasFilledValue(id) {
+      const el = $(id);
+      if (!el || el.closest('.hidden')) return true;
+      if (el.type === 'checkbox' || el.type === 'radio') return el.checked;
+      return !!String(el.value || '').trim();
+    }
+
+    function getStepSummary(index) {
+      const grupo = getGrupoSelecionado()?.nome || '';
+      const local = getLocalEspecificoSelecionado()?.nome || '';
+      const setor = getSetorSelecionado()?.nome || '';
+      const tipo = getTipoInstalacaoSelecionado()?.nome || '';
+      const summaries = {
+        0: [$("numeroChamado").value, $("patrimonio").value, $("ip").value].filter(Boolean),
+        1: [APP.marcasComputador.find(x => x.id === $("marcaComputador").value)?.nome || '', tipo, $("memoriaRam").value, $("armazenamentoTipo").value].filter(Boolean),
+        2: [grupo, grupo === 'IGS' ? setor : local, $("proxyInicializar").value ? `Proxy: ${$("proxyInicializar").value}` : ''].filter(Boolean),
+        3: [$("problema").value.trim() ? 'Problema preenchido' : '', $("resolucao").value.trim() ? 'Resolução preenchida' : ''].filter(Boolean)
+      };
+      const parts = summaries[index] || [];
+      return parts.length ? parts.join(' • ') : 'Preencha esta etapa para liberar a próxima.';
+    }
+
+    function isStepComplete(index) {
+      const grupo = getGrupoSelecionado()?.nome || '';
+      const tipo = getTipoInstalacaoSelecionado();
+      switch (index) {
+        case 0:
+          return hasFilledValue('numeroChamado') && hasFilledValue('patrimonio') && hasFilledValue('ip');
+        case 1:
+          return hasFilledValue('marcaComputador') && hasFilledValue('tipoInstalacao') && (!tipo?.exige_justificativa || hasFilledValue('tipoInstalacaoJustificativa')) && hasFilledValue('memoriaRam') && ($("memoriaRam").value !== 'Outro' || hasFilledValue('memoriaRamOutro')) && hasFilledValue('armazenamentoTipo') && ($("armazenamentoTipo").value !== 'SSD Outros' || hasFilledValue('armazenamentoOutros')) && hasFilledValue('officeAtivado');
+        case 2:
+          if (!hasFilledValue('grupoLocalidade')) return false;
+          if (grupo === 'IGS') {
+            return hasFilledValue('setorIGS') && hasFilledValue('proxyInicializar');
+          }
+          if (grupo === 'PAMB') {
+            return hasFilledValue('grupoLocalidade') && hasFilledValue('localidadeEspecifica');
+          }
+          return hasFilledValue('localidadeEspecifica') && hasFilledValue('proxyInicializar');
+        case 3:
+          return hasFilledValue('problema') && hasFilledValue('resolucao');
+        default:
+          return false;
+      }
+    }
+
+    function getFirstIncompleteStep() {
+      for (let i = 0; i < MOBILE_FORM_STEPS.length; i += 1) {
+        if (!isStepComplete(i)) return i;
+      }
+      return MOBILE_FORM_STEPS.length - 1;
+    }
+
+    function updateDesktopWizardUI(activeStep) {
+      document.querySelectorAll('.desktop-step-chip').forEach((chip, idx) => {
+        chip.classList.toggle('is-active', idx === activeStep);
+        chip.classList.toggle('is-done', isStepComplete(idx));
+        chip.classList.toggle('is-locked', idx > activeStep);
+      });
+    }
+
+    function updateFormFlow() {
+      const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
+      if (!blocks.length) return;
+
+      const firstIncomplete = getFirstIncompleteStep();
+      const activeStep = isMobileViewport() ? currentMobileStep : firstIncomplete;
+
+      blocks.forEach((block, idx) => {
+        const summary = block.querySelector('.form-block-summary');
+        if (summary) summary.textContent = getStepSummary(idx);
+        block.classList.toggle('done', isStepComplete(idx));
+        block.classList.toggle('locked', !isMobileViewport() && idx > firstIncomplete);
+        block.classList.toggle('open', idx === activeStep || (isMobileViewport() && idx === currentMobileStep));
+        block.classList.toggle('mobile-hidden', isMobileViewport() && idx !== currentMobileStep);
+      });
+
+      updateDesktopWizardUI(firstIncomplete);
     }
 
     function updateMobileStepUI() {
@@ -2891,14 +3152,10 @@
       const prevBtn = $('btnMobilePrevStep');
       const nextBtn = $('btnMobileNextStep');
       const saveBtn = $('btnMobileSave');
-      const blocks = Array.from(document.querySelectorAll('#formGrid .form-block'));
+      const maxUnlocked = Math.min(getFirstIncompleteStep(), MOBILE_FORM_STEPS.length - 1);
+
+      if (currentMobileStep > maxUnlocked) currentMobileStep = maxUnlocked;
       const step = MOBILE_FORM_STEPS[currentMobileStep];
-
-      if (!blocks.length) return;
-
-      blocks.forEach((block, idx) => {
-        block.classList.toggle('mobile-hidden', isMobileViewport() && idx !== currentMobileStep);
-      });
 
       if (stepLabel) stepLabel.textContent = `Etapa ${currentMobileStep + 1} de ${MOBILE_FORM_STEPS.length}`;
       if (stepTitle) stepTitle.textContent = step.title;
@@ -2907,6 +3164,8 @@
       if (prevBtn) prevBtn.classList.toggle('hidden', currentMobileStep === 0);
       if (nextBtn) nextBtn.classList.toggle('hidden', currentMobileStep === MOBILE_FORM_STEPS.length - 1);
       if (saveBtn) saveBtn.classList.toggle('hidden', currentMobileStep !== MOBILE_FORM_STEPS.length - 1);
+
+      updateFormFlow();
     }
 
     function resetMobileStep() {
@@ -2915,6 +3174,10 @@
     }
 
     function nextMobileStep() {
+      if (!isStepComplete(currentMobileStep)) {
+        showToast('Preencha a etapa atual antes de avançar.', 'error');
+        return;
+      }
       if (currentMobileStep < MOBILE_FORM_STEPS.length - 1) {
         currentMobileStep += 1;
         updateMobileStepUI();
@@ -2950,6 +3213,7 @@
     function setupResponsiveModes() {
       buildFormSections();
       updateMobileStepUI();
+      updateFormFlow();
       if (isMobileViewport()) {
         activateMobileSection(document.querySelector('.mobile-nav-btn.active')?.dataset.target || 'dashboardSection');
         $('consultaSection')?.classList.add('compact-filters');
@@ -2965,7 +3229,7 @@
           area.style.height = 'auto';
           area.style.height = Math.max(area.scrollHeight, 110) + 'px';
         };
-        area.addEventListener('input', resize);
+        area.addEventListener('input', () => { resize(); updateFormFlow(); });
         setTimeout(resize, 0);
       });
     }
@@ -2989,6 +3253,13 @@
       $("btnToggleConsultaFilters").textContent = card.classList.contains("compact-filters") ? "Mostrar filtros" : "Ocultar filtros";
     };
     document.querySelectorAll(".mobile-nav-btn").forEach(btn => btn.onclick = () => activateMobileSection(btn.dataset.target));
+
+    ["numeroChamado", "patrimonio", "ip", "tipoInstalacaoJustificativa"].forEach(id => {
+      $(id)?.addEventListener('input', updateFormFlow);
+    });
+    ["marcaComputador", "tipoInstalacao", "officeAtivado", "grupoLocalidade", "localidadeEspecifica", "proxyInicializar", "setorIGS", "memoriaRam", "armazenamentoTipo"].forEach(id => {
+      $(id)?.addEventListener('change', updateFormFlow);
+    });
 
     $("btnLimparFiltros").onclick = () => {
       $("buscaPatrimonio").value = "";
