@@ -1246,7 +1246,6 @@
           <h1 id="authTitle">Acessar sistema</h1>
           <p id="authSubtitle" class="muted">Entre com sua conta corporativa para continuar.</p>
         </div>
-
         <div class="auth-tabs">
           <button id="btnTabLogin" class="auth-tab active" type="button">Entrar</button>
           <button id="btnTabRegister" class="auth-tab" type="button">Criar conta</button>
@@ -1374,7 +1373,6 @@
 
       <div id="adminPanel" class="card hidden">
         <h3>Administrador</h3>
-
         <div class="grid-2">
           <div class="card" style="margin-bottom:0;">
             <h4>Grupos de localidade</h4>
@@ -3273,7 +3271,7 @@
       const tipo = getTipoInstalacaoSelecionado()?.nome || '';
       const summaries = {
         0: [$("numeroChamado").value, $("patrimonio").value, $("ip").value].filter(Boolean),
-        1: [APP.marcasComputador.find(x => x.id === $("marcaComputador").value)?.nome || '', tipo, $("memoriaRam").value, $("armazenamentoTipo").value].filter(Boolean),
+        1: [APP.marcas.find(x => x.id === $("marcaComputador").value)?.nome || '', tipo, $("memoriaRam").value, $("armazenamentoTipo").value].filter(Boolean),
         2: [grupo, grupo === 'IGS' ? setor : local, $("proxyInicializar").value ? `Proxy: ${$("proxyInicializar").value}` : ''].filter(Boolean),
         3: [$("problema").value.trim() ? 'Problema preenchido' : '', $("resolucao").value.trim() ? 'Resolução preenchida' : ''].filter(Boolean)
       };
