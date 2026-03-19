@@ -414,9 +414,175 @@
       padding:8px 10px;
       font-size:13px;
     }
+  
+    .hero-bg {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,.09), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(0,0,0,.04), transparent 18%),
+        linear-gradient(180deg, #f8fafc 0%, var(--bg) 100%);
+    }
+
+    body.dark.hero-bg {
+      background:
+        radial-gradient(circle at top left, rgba(34,197,94,.12), transparent 22%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,.03), transparent 18%),
+        linear-gradient(180deg, #0b1220 0%, var(--bg) 100%);
+    }
+
+    .auth-shell {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px 16px;
+    }
+
+    .auth-card-pro {
+      width:100%;
+      max-width:860px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:24px;
+      padding:30px;
+      box-shadow:0 24px 60px rgba(0,0,0,.10);
+    }
+
+    .auth-brand {
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      margin-bottom:8px;
+    }
+
+    .auth-logo {
+      display:block;
+      max-width:320px;
+      width:min(100%, 320px);
+      margin:0 auto;
+      object-fit:contain;
+      filter:drop-shadow(0 8px 18px rgba(0,0,0,.06));
+    }
+
+    .auth-header-pro {
+      text-align:center;
+      margin-bottom:18px;
+    }
+
+    .auth-header-pro h1 {
+      margin:0 0 8px;
+      font-size:30px;
+      font-weight:800;
+      letter-spacing:-.03em;
+    }
+
+    .auth-header-pro p {
+      margin:0;
+    }
+
+    .auth-highlight {
+      text-align:center;
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .auth-tabs {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:8px;
+      background:var(--soft);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:6px;
+      margin-bottom:22px;
+    }
+
+    .auth-tab {
+      background:transparent;
+      color:var(--muted);
+      border:none;
+      border-radius:12px;
+      font-weight:800;
+      padding:12px 14px;
+    }
+
+    .auth-tab.active {
+      background:var(--card);
+      color:var(--text);
+      box-shadow:0 8px 18px rgba(0,0,0,.06);
+    }
+
+    .auth-tab:hover {
+      background:rgba(127,127,127,.08);
+      color:var(--text);
+    }
+
+    .auth-submit {
+      min-height:50px;
+      border-radius:14px;
+      font-size:15px;
+      font-weight:800;
+    }
+
+    .auth-foot-actions {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+
+    .auth-inline-link {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      background:none;
+      border:none;
+      color:#16a34a;
+      font-size:14px;
+      font-weight:700;
+      padding:0;
+      width:auto;
+      cursor:pointer;
+    }
+
+    body.dark .auth-inline-link {
+      color:#86efac;
+    }
+
+    .auth-message {
+      margin-top:14px;
+      text-align:center;
+      min-height:16px;
+    }
+
+    .auth-panel {
+      margin-top:16px;
+      border:1px dashed var(--border);
+      border-radius:16px;
+      padding:16px;
+      background:linear-gradient(180deg, rgba(127,127,127,.03), transparent);
+    }
+
+    .auth-panel h4 {
+      margin-bottom:8px;
+    }
+
+    @media (max-width: 640px) {
+      .auth-card-pro {
+        padding:22px;
+        border-radius:20px;
+      }
+
+      .auth-header-pro h1 {
+        font-size:24px;
+      }
+    }
+
   </style>
 </head>
-<body>
+<body class="hero-bg">
   <div class="toast-wrap" id="toastWrap"></div>
 
   <div id="detailsModalBackdrop" class="modal-backdrop hidden">
@@ -433,51 +599,94 @@
   </div>
 
   <div class="container">
-    <div id="authView" class="card">
-      <img class="logo" src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png" alt="MW Microware" />
+    <div id="authView" class="auth-shell">
+      <div class="auth-card-pro">
+        <div class="auth-brand">
+          <img class="logo auth-logo" src="https://www.mwmicroware.com.br/wp-content/uploads/2018/05/cropped-mw_logo_full3.png" alt="MW Microware" />
+        </div>
 
-      <div class="row" style="margin-bottom:12px;">
-        <button id="btnTabLogin">Login</button>
-        <button id="btnTabRegister" class="ghost">Registrar</button>
-      </div>
+        <div class="auth-header-pro">
+          <h1 id="authTitle">Acessar sistema</h1>
+          <p id="authSubtitle" class="muted">Entre com sua conta corporativa para continuar.</p>
+        </div>
 
-      <div id="loginBox">
-        <div class="grid-2">
-          <div>
-            <label>Email</label>
-            <input id="loginEmail" type="email" placeholder="tecnico@mwmicroware.com" />
+        <p class="auth-highlight">Oficina MW Microware • Controle técnico, chamados, histórico e relatórios.</p>
+
+        <div class="auth-tabs">
+          <button id="btnTabLogin" class="auth-tab active" type="button">Entrar</button>
+          <button id="btnTabRegister" class="auth-tab" type="button">Criar conta</button>
+        </div>
+
+        <div id="loginBox">
+          <div class="grid-2">
+            <div>
+              <label>Email corporativo</label>
+              <input id="loginEmail" type="email" placeholder="tecnico@mwmicroware.com.br" />
+            </div>
+            <div>
+              <label>Senha</label>
+              <input id="loginSenha" type="password" placeholder="Digite sua senha" />
+            </div>
           </div>
-          <div>
-            <label>Senha</label>
-            <input id="loginSenha" type="password" placeholder="******" />
+
+          <div class="auth-foot-actions">
+            <span class="small muted">Acesso restrito a técnicos autorizados.</span>
+            <button id="btnForgotPassword" class="auth-inline-link" type="button">Esqueci minha senha</button>
+          </div>
+
+          <button id="btnLogin" class="auth-submit" style="margin-top:12px;">Entrar</button>
+        </div>
+
+        <div id="registerBox" class="hidden">
+          <div class="grid-2">
+            <div>
+              <label>Nome do técnico</label>
+              <input id="regNome" placeholder="Nome completo" />
+            </div>
+            <div>
+              <label>Email corporativo</label>
+              <input id="regEmail" type="email" placeholder="tecnico@mwmicroware.com.br" />
+            </div>
+            <div>
+              <label>Senha</label>
+              <input id="regSenha" type="password" placeholder="Crie uma senha" />
+            </div>
+            <div>
+              <label>Confirmar senha</label>
+              <input id="regSenha2" type="password" placeholder="Repita a senha" />
+            </div>
+          </div>
+
+          <button id="btnRegister" class="auth-submit" style="margin-top:12px;">Criar conta</button>
+        </div>
+
+        <div id="forgotBox" class="auth-panel hidden">
+          <h4>Recuperar acesso</h4>
+          <p class="muted">Informe seu email corporativo. Um link de redefinição será enviado para sua caixa de entrada.</p>
+          <div class="row" style="margin-top:12px;">
+            <input id="forgotEmail" type="email" placeholder="tecnico@mwmicroware.com.br" />
+            <button id="btnSendReset" class="ghost" type="button">Enviar link</button>
           </div>
         </div>
-        <button id="btnLogin" style="margin-top:12px;">Entrar</button>
-      </div>
 
-      <div id="registerBox" class="hidden">
-        <div class="grid-2">
-          <div>
-            <label>Nome do técnico</label>
-            <input id="regNome" placeholder="Técnico" />
+        <div id="resetPasswordBox" class="auth-panel hidden">
+          <h4>Redefinir senha</h4>
+          <p class="muted">Você abriu um link de recuperação. Defina sua nova senha abaixo.</p>
+          <div class="grid-2" style="margin-top:12px;">
+            <div>
+              <label>Nova senha</label>
+              <input id="newPassword" type="password" placeholder="Nova senha" />
+            </div>
+            <div>
+              <label>Confirmar nova senha</label>
+              <input id="confirmNewPassword" type="password" placeholder="Repita a nova senha" />
+            </div>
           </div>
-          <div>
-            <label>Email</label>
-            <input id="regEmail" type="email" placeholder="tecnico@mwmicroware.com.br" />
-          </div>
-          <div>
-            <label>Senha</label>
-            <input id="regSenha" type="password" placeholder="******" />
-          </div>
-          <div>
-            <label>Confirmar senha</label>
-            <input id="regSenha2" type="password" placeholder="******" />
-          </div>
+          <button id="btnUpdatePassword" class="auth-submit" style="margin-top:12px;" type="button">Salvar nova senha</button>
         </div>
-        <button id="btnRegister" style="margin-top:12px;">Criar conta</button>
-      </div>
 
-      <p id="authMsg" class="small muted" style="margin-top:10px;"></p>
+        <p id="authMsg" class="small muted auth-message"></p>
+      </div>
     </div>
 
     <div id="appView" class="hidden">
@@ -844,15 +1053,21 @@
     function showLogin() {
       $("loginBox").classList.remove("hidden");
       $("registerBox").classList.add("hidden");
-      $("btnTabLogin").classList.remove("ghost");
-      $("btnTabRegister").classList.add("ghost");
+      $("btnTabLogin").classList.add("active");
+      $("btnTabRegister").classList.remove("active");
+      $("authTitle").textContent = "Acessar sistema";
+      $("authSubtitle").textContent = "Entre com sua conta corporativa para continuar.";
+      setMsg(authMsg, "");
     }
 
     function showRegister() {
       $("loginBox").classList.add("hidden");
       $("registerBox").classList.remove("hidden");
-      $("btnTabLogin").classList.add("ghost");
-      $("btnTabRegister").classList.remove("ghost");
+      $("btnTabLogin").classList.remove("active");
+      $("btnTabRegister").classList.add("active");
+      $("authTitle").textContent = "Criar nova conta";
+      $("authSubtitle").textContent = "Preencha os dados para solicitar acesso ao sistema.";
+      setMsg(authMsg, "");
     }
 
     $("btnTabLogin").onclick = showLogin;
@@ -1147,6 +1362,99 @@
     };
 
     applyTheme(localStorage.getItem("oficina_theme") || "light");
+
+
+    function toggleForgotBox(forceOpen = null) {
+      const box = $("forgotBox");
+      const shouldOpen = forceOpen === null ? box.classList.contains("hidden") : forceOpen;
+      box.classList.toggle("hidden", !shouldOpen);
+      if (shouldOpen) {
+        $("forgotEmail").value = $("loginEmail").value.trim();
+      }
+    }
+
+    async function sendPasswordReset() {
+      try {
+        const email = $("forgotEmail").value.trim() || $("loginEmail").value.trim();
+        if (!email) return setMsg(authMsg, "Informe seu email para recuperar a senha.", "err");
+
+        const supabase = getSupabase();
+        const redirectTo = `${window.location.origin}${window.location.pathname}`;
+        const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo });
+        if (error) throw error;
+
+        setMsg(authMsg, "Link de redefinição enviado. Verifique seu email.", "ok");
+        showToast("Link de recuperação enviado.", "success");
+        toggleForgotBox(false);
+      } catch (e) {
+        console.error("Erro ao enviar recuperação de senha:", e);
+        setMsg(authMsg, e.message || "Erro ao enviar recuperação.", "err");
+        showToast(e.message || "Erro ao enviar recuperação.", "error");
+      }
+    }
+
+    async function updateRecoveredPassword() {
+      try {
+        const senha = $("newPassword").value;
+        const senha2 = $("confirmNewPassword").value;
+
+        if (!senha || !senha2) return setMsg(authMsg, "Preencha os dois campos de nova senha.", "err");
+        if (senha !== senha2) return setMsg(authMsg, "As novas senhas não coincidem.", "err");
+        if (senha.length < 6) return setMsg(authMsg, "Use uma senha com pelo menos 6 caracteres.", "err");
+
+        const supabase = getSupabase();
+        const { error } = await supabase.auth.updateUser({ password: senha });
+        if (error) throw error;
+
+        $("newPassword").value = "";
+        $("confirmNewPassword").value = "";
+        $("resetPasswordBox").classList.add("hidden");
+        showLogin();
+        setMsg(authMsg, "Senha atualizada com sucesso. Faça login novamente.", "ok");
+        showToast("Senha redefinida com sucesso.", "success");
+      } catch (e) {
+        console.error("Erro ao redefinir senha:", e);
+        setMsg(authMsg, e.message || "Erro ao redefinir a senha.", "err");
+        showToast(e.message || "Erro ao redefinir a senha.", "error");
+      }
+    }
+
+    async function handleRecoveryFlow() {
+      try {
+        const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+        const query = new URLSearchParams(window.location.search);
+        const type = hash.get("type") || query.get("type");
+        const accessToken = hash.get("access_token");
+        const refreshToken = hash.get("refresh_token");
+
+        if (type !== "recovery") return;
+
+        const supabase = getSupabase();
+
+        if (accessToken && refreshToken) {
+          const { error } = await supabase.auth.setSession({
+            access_token: accessToken,
+            refresh_token: refreshToken
+          });
+          if (error) throw error;
+        }
+
+        showLogin();
+        $("forgotBox").classList.add("hidden");
+        $("resetPasswordBox").classList.remove("hidden");
+        $("authTitle").textContent = "Redefinir senha";
+        $("authSubtitle").textContent = "Defina uma nova senha para sua conta.";
+        setMsg(authMsg, "Link de recuperação validado. Agora defina sua nova senha.", "ok");
+
+        if (window.location.hash.includes("access_token")) {
+          history.replaceState({}, document.title, window.location.pathname);
+        }
+      } catch (e) {
+        console.error("Erro ao iniciar recuperação:", e);
+        setMsg(authMsg, e.message || "Não foi possível iniciar a recuperação.", "err");
+        showToast(e.message || "Erro ao iniciar recuperação.", "error");
+      }
+    }
 
     async function register() {
       try {
@@ -2178,6 +2486,9 @@
     }
 
     $("btnRegister").onclick = register;
+    $("btnForgotPassword").onclick = () => toggleForgotBox();
+    $("btnSendReset").onclick = sendPasswordReset;
+    $("btnUpdatePassword").onclick = updateRecoveredPassword;
     $("btnLogin").onclick = login;
     $("btnSalvar").onclick = saveCall;
     $("btnBuscar").onclick = buscar;
@@ -2206,6 +2517,7 @@
     $("grupoNovoLocal").addEventListener("change", loadAdminLocaisList);
 
     updateChecklist();
+    handleRecoveryFlow();
     restoreSession();
   </script>
 </body>
